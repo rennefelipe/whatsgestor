@@ -1,0 +1,51 @@
+WHATSgestor - gravacao e envio de audio
+Data: 2026-10-14
+
+Escopo
+
+Foi adicionado um unico botao de microfone ao compositor existente. O botao de
+clipe e seu fluxo validado de JPEG, PNG, WebP e PDF foram preservados.
+
+O navegador solicita acesso ao microfone somente quando o usuario inicia uma
+gravacao. A interface mostra o tempo, permite parar, ouvir a previa, cancelar e
+enviar. O limite e de 5 minutos ou 16 MiB. Cliques repetidos nao iniciam envios
+duplicados e todas as trilhas do microfone e URLs de previa sao liberadas.
+
+Permissoes
+
+Texto, clipe e microfone seguem a mesma regra: conexao ativa, atendimento em
+andamento e usuario responsavel ou administrador ativo. A regra usa o estado da
+conversa, portanto funciona tambem na aba Todos. Uma conversa em Aguardando
+precisa ser assumida antes do envio; apos assumir, ela permanece selecionada na
+aba Em atendimento.
+
+Backend
+
+POST /whatsapp-conversations/:conversationId/messages/audio recebe multipart
+autenticado com uma unica parte file e Idempotency-Key UUID. O backend valida
+extensao, MIME, assinatura real e tamanho, converte WebM/Ogg/MP4 para Ogg/Opus
+mono com FFmpeg e envia pelo Baileys como mensagem de voz (PTT).
+
+O envio usa o mesmo diario privado autorizado para anexos. O arquivo normalizado
+e gravado antes do envio externo. Depois da confirmacao do WhatsApp, a mensagem e
+a midia sao persistidas em uma transacao curta. Falha de SQL conserva o registro
+confirmado para recuperacao sem reenviar. Resultado incerto exige conferencia
+manual.
+
+Operacao
+
+O host do backend precisa ter FFmpeg com libopus. WHATSAPP_FFMPEG_PATH pode
+apontar para o executavel e WHATSAPP_UPLOAD_AUDIO_MAX_BYTES pode reduzir o limite
+de entrada, ate o teto de 16 MiB. Nenhuma migration ou tabela nova e necessaria.
+
+Validacao local
+
+- Backend: 253 testes aprovados e 2 ignorados; build e TypeScript aprovados.
+- Frontend: 48 testes aprovados; lint, build e TypeScript aprovados.
+- Conversao real local: WebM sintetico convertido para Ogg/Opus mono; cabecalho
+  OggS, duracao e tamanho validados pelo mesmo codigo do endpoint.
+- Pendente: permissao real do microfone no navegador, envio a um destinatario
+  WhatsApp e reproducao depois de F5 no ambiente em execucao.
+
+Nao foram executadas migrations, alteracoes de banco, logout ou mudancas nas
+sessoes WhatsApp.

@@ -1,0 +1,52 @@
+WhatsGestor — ativação controlada da Fase 1
+Data: 2026-10-09
+
+Configuração:
+WHATSAPP_MEDIA_ENABLED=true
+WHATSAPP_MEDIA_DIR="C:/Users/Tecnica-01/.whatsgestor/media"
+Demais variáveis preservadas; nenhuma credencial incluída neste relatório.
+Diretório criado fora do repositório e separado de whatsapp-sessions.
+NTFS: herança desabilitada; controle total para Tecnica-01, SYSTEM e Administradores.
+Conta do backend: DESKTOP-T3R6HCI\Tecnica-01.
+Leitura e gravação verificadas com arquivo temporário exclusivo, removido após o teste.
+Nenhum arquivo existente ou sessão foi removido.
+
+Inicialização:
+Supervisor existente nest start --watch reutilizado; nenhuma segunda instância iniciada.
+PID 1636 na porta 3001, iniciado após alteração do .env.
+API responde; /auth/me, /whatsapp-conversations e rota de mídia retornam 401 sem JWT.
+Consultas somente de leitura: WhatsGestor / DESKTOP-T3R6HCI; 9 migrations aplicadas; synchronize=false.
+Suporte Audit: connected, isActive=true; lastConnectedAt=2026-10-09T21:19:22.568Z.
+Sem logout. Nenhuma migration executada nesta ativação.
+Nenhuma mídia registrada no momento da consulta.
+Console do terminal original não capturado; inicialização verificada por HTTP e reconexão registrada.
+
+Proteções existentes conferidas:
+Imagens JPEG/PNG/WebP: 5 MiB; PDF: 20 MiB; áudio: 16 MiB.
+Áudio: OGG, MPEG, MP4, AAC e WAV, conforme lista MIME existente.
+Validação de MIME, assinatura, tamanho real e hash disponível; nomes internos UUID.
+Armazenamento privado; JWT/usuário ativo e vínculo mensagem/conversa para acesso.
+Downloads após persistência, fora da transação SQL; falhas preservam a mensagem.
+
+Testes nesta ativação:
+Backend: npm test -- --runInBand: 20 suítes, 164 aprovados, 2 opcionais ignorados.
+Frontend: node --test tests/encoding.test.mjs tests/appearance.test.mjs tests/whatsapp-media.test.mjs: 20 aprovados.
+Cobertura de recebimento, duplicidade, armazenamento, falhas, autorização e reabertura por mídia.
+Nenhuma alteração de código funcional, temas, atendimento ou fluxo de texto.
+
+Validação real pendente, não considerada concluída:
+1. Cliente WhatsApp envia texto e JPEG/PNG novos para Suporte Audit; conferir texto e imagem.
+2. Enviar PDF e baixar autenticado, conferindo arquivo sem URL pública.
+3. Enviar áudio e reproduzir no navegador.
+4. Atualizar com F5 e conferir persistência e histórico.
+5. Finalizar atendimento e enviar mídia nova: waiting, responsável null, contato/histórico preservados.
+6. Em in_progress, conferir situação e responsável preservados.
+7. Duplicatas/histórico e mensagens enviadas não devem reabrir atendimento.
+8. Conferir imagem, documento, áudio e erros nos temas Branco, Cinza e Escuro.
+9. Conferir negativa sem JWT/usuário inativo e mídia de outra conversa.
+
+Pendências operacionais:
+Não há limpeza automática de órfãos nem recuperação automática de pending após falha de processo.
+Monitorar espaço livre e incluir diretório privado nos backups. Assinatura não substitui antivírus.
+Fases 2 e 3 não iniciadas.
+Arquivos desta ativação: backend/.env e backend/docs/media-phase-1-activation.txt.

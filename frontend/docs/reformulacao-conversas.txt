@@ -1,0 +1,308 @@
+Reformulacao da pagina Conversas - planejamento consolidado
+Atualizacao: 13/10/2026
+
+Esta entrega reorganiza a pagina existente. Nao cria outra tela, outro fluxo
+de atendimento ou nova implementacao dos filtros e da paginacao.
+
+Implementado:
+- Cabecalho em tres linhas compactas: titulo/total, conexao/busca/atualizar,
+  filtros de status com contadores. Sem descricao permanente.
+- Labels acessiveis e explicacao do escopo por pagina preservadas para leitores
+  de tela; tooltip das abas informa que a contagem e a busca sao da pagina atual.
+- Abas com cores fortes permanentes; a selecionada tambem tem sublinhado.
+- Atualizar por icone, com nome acessivel, tooltip e bloqueio durante a requisicao.
+- Workspace da pagina acompanha 100dvh. Topbar e controles usam suas alturas
+  naturais; lista e historico ocupam o restante, com rolagem independente.
+- Caixa de envio e paginacao permanecem no rodape dos respectivos paineis.
+- Em larguras ate 900px, lista e conversa usam a navegacao de um painel ja
+  existente. Ate 480px, busca passa para uma segunda linha.
+- Em janelas muito baixas (ate 500px), cabecalho do chat e composer ficam
+  compactos. Apenas o historico rola; o workspace nao recebe rolagem adicional.
+
+Validacao: build/lint e testes existentes do frontend; renderizacao dos
+componentes reais com dados ficticios e CSS compilado em Chrome headless.
+Nas medidas desktop 1440x900, 1280x720 e 1024x768, controles com 117px,
+dentro do objetivo de 110-160px. A altura inclui titulo, filtros e abas;
+exclui a topbar global, margens externas e alertas transitorios.
+Temas Branco, Cinza e Escuro; verificacao adicional de tablet/celular.
+Essa verificacao visual nao envia mensagens nem usa credenciais/API reais.
+
+Preservado:
+Handlers de filtros e busca, contadores da pagina atual, paginacao,
+permissoes, atendimento, contatos, texto e midias recebidas. Backend inalterado.
+
+Escopo futuro segue separado: envio de anexos e gravacao de audio dependem
+das Fases 2 e 3. Nao implementar uma segunda barra de controles para essas
+fases; integrar as futuras acoes ao composer existente. Historico antigo
+permanece fora desta reformulacao.
+
+Arquivos: components/app-shell.tsx,
+components/whatsapp/whatsapp-conversations-screen.tsx,
+app/globals.css e app/themes.css. As regras antigas dos controles foram
+consolidadas, evitando acumular novos overrides para a mesma interface.
+
+Atualizacao - rolagem de mensagens e paleta aprovada
+
+O viewport conversation-messages agora acompanha a ultima mensagem ao abrir
+ou trocar conversa e apos envio confirmado. Recebimento acompanha o final
+apenas quando o leitor estava a ate 96px dele. Polling sem mudanca de conteudo
+nao reposiciona a leitura. Fora do final (tolerancia de 4px para arredondamento),
+o botao flutuante permite ir para a ultima mensagem.
+Ao consultar mensagens antigas, a primeira mensagem visivel e sua distancia
+do topo do painel ficam ancoradas, inclusive ao carregar paginas anteriores
+ou redimensionar midias. Nao ha scrollIntoView nem inversao de mensagens.
+ResizeObserver acompanha o conteudo e o viewport. Imagem/audio reservam area
+durante carregamento; a imagem fica contida nesse espaco, sem overflow visual.
+
+Paleta por tokens status-*: Todos #475569/branco, Aguardando #F9AB00/escuro,
+Em atendimento #1A73E8/branco, Finalizados #188038/branco. A etapa de menu
+retratil e fotos mantem essas cores permanentes em todas as abas; a selecionada
+tambem tem indicador inferior, sem depender apenas da cor.
+Iniciar e azul, Enviar/Finalizar sao verdes; acoes secundarias sao neutras.
+Alertas da pagina usam #EA4335 e texto escuro (#210B06), pois branco sobre
+esse vermelho nao atende 4.5:1 para texto pequeno. Hover/foco/desabilitado
+utilizam tokens semanticos dos tres temas, com contraste verificado.
+
+Ordenacao confirmada sem alterar backend/banco: lastMessageAt DESC,
+createdAt DESC, id ASC no SQL antes de skip/take. O frontend preserva a ordem
+retornada, inclusive apos polling. lastMessageAt avanca por atividade nova;
+mensagens antigas nao fazem esse timestamp retroceder. Filtros/paginacao,
+deduplicacao, permissoes e regras de atendimento permanecem existentes.
+
+Validacao desta etapa:
+- Lint, build e TypeScript do frontend.
+- 30 testes do frontend, incluindo 10 cenarios de rolagem e contraste AA
+  nos tres temas. Envio/recebimento nesses cenarios sao simulados.
+- 6 testes de ordenacao/paginacao do backend, usando SQL gerado e mocks,
+  sem conexao real nem alteracoes de banco.
+- 39 checks em Chrome headless isolado, com 200 mensagens ficticias, imagem
+  tardia, polling, leitura antiga, pagina anterior, troca de conversa,
+  comportamento de envio/recebimento e cores reais computadas nos tres temas.
+- Validacao autenticada com WhatsApp real e F5 na sessao do usuario pendente;
+  nao foram enviadas mensagens reais nem afirmado sucesso de Baileys.
+
+Arquivos desta etapa:
+components/whatsapp/message-scroll.ts (novo)
+components/whatsapp/use-message-scroll.ts (novo)
+components/whatsapp/whatsapp-conversations-screen.tsx
+components/whatsapp/conversation-media.tsx
+components/whatsapp/conversation-attendance-controls.tsx (somente classes)
+app/globals.css
+app/themes.css
+tests/message-scroll.test.mjs (novo)
+tests/appearance.test.mjs
+docs/reformulacao-conversas.txt
+Sem alteracoes em Baileys, autenticacao, schema, envio/recebimento ou fases 2/3.
+
+Atualizacao - menu retratil, mais area e fotos de perfil
+
+Menu desktop: 208px expandido (184px em telas intermediarias), 64px recolhido.
+Botao expandir/recolher, nomes acessiveis, tooltips no hover/foco e pagina ativa
+preservados. Preferencia local por UUID do usuario, sem banco; F5 e contas
+diferentes preservam seu proprio estado. Storage bloqueado usa estado temporario.
+Em telas ate 650px, quatro icones ficam em uma barra inferior de 56px. O espaco
+e reservado no layout, sem cobrir composer ou conversas e sem mudar a preferencia
+desktop. Transicoes curtas respeitam prefers-reduced-motion.
+
+Topbar desktop reduzida para 52px, margens da pagina menores e lista entre
+285 e 330px. Em 1440x900, o historico medido tem 872px com menu expandido e
+1016px com menu recolhido. Campo de envio fixo, paineis de rolagem independente,
+controle de ultima mensagem e filtros/contadores/paginacao preservados.
+As quatro abas agora mantem cores fortes permanentes da paleta aprovada.
+No celular, vincular/desvincular usa icone com nome acessivel; status compacto
+preserva o nome completo para acessibilidade e tooltip.
+
+Fotos: consulta oficial profilePictureUrl(jid, 'preview', 5000) do Baileys
+6.7.24 instalado, usando somente socket existente ativo/conectado. Nao muda
+privacidade, autenticacao, credenciais, eventos ou envio/recebimento.
+Referencia: https://github.com/WhiskeySockets/Baileys#fetch-profile-picture-groups-too
+Lista e cabecalho das conversas, tabela de Contatos e seletor de vinculo usam
+o mesmo ProfileAvatar. Foto ausente/privada/indisponivel ou erro usa iniciais.
+Avatares possuem dimensoes constantes; fotos nao bloqueiam a lista nem deslocam
+mensagens. Browser recebe blob autenticado e revoga Object URLs ao atualizar/sair.
+
+GETs autenticados (guard global existente, usuario ativo):
+/whatsapp-profile-photos/conversations/:id
+/whatsapp-profile-photos/contacts/:id
+200 com JPEG/PNG/WebP validado, 204 sem foto, 404 para ID inexistente.
+Headers private/no-store e nosniff. URL privada do WhatsApp nao e devolvida.
+Download HTTPS somente de dominios WhatsApp, sem redirects, timeout 8s, limite
+512KiB e validacao de assinatura. Nao ha rota estatica ou arquivos de foto
+persistidos, tampouco leitura/exposicao de sessoes por esses endpoints.
+
+Identidade: usa exatamente remoteJid existente, tanto PN quanto LID. Contatos
+cadastrados precisam de vinculo explicito com conversa. Sem vinculo ou com
+JIDs distintos/ambiguos (inclusive LID/PN sem mapeamento comprovado), exibe
+iniciais; nao deduz telefone. Entre vinculos da mesma identidade, escolhe uma
+sessao conectada. Nao ha associacao por numero digitado, nome ou foto semelhante.
+
+Cache backend: 64 entradas em memoria, 15min positivo/2min negativo;
+2 consultas/downloads simultaneos e fila de 16. Frontend: 64 blobs por chave
+usuario/endpoint, 5min positivo/2min negativo; 2 requisicoes e fila de 32.
+Consultas concorrentes da mesma foto compartilham promessa. Avatares fora da
+area visivel nao buscam foto; atualizam a cada 5min somente quando visiveis
+com a pagina ativa. Fotos podem levar alguns minutos para refletir alteracoes
+de privacidade/perfil. Cache nao e backup nem compartilhado entre servidores.
+
+Validacao:
+Backend build/lint direcionado/TypeScript; 199 testes aprovados, 2 opcionais
+ignorados. Foram corrigidas apenas fixtures readonly/tipos em dois testes
+antigos de session-manager para a verificacao TypeScript completa.
+Frontend build/lint/TypeScript; 35 testes aprovados, incluindo preferencias,
+cache/fallback/isolamento de usuario, contraste AA e regressao de rolagem.
+Chrome headless isolado: componentes reais com fotos/dados ficticios;
+10 cenarios aprovados em 320,390,768,1024,1280 e 1440px, tres temas,
+menu expandido/recolhido, F5 real da fixture, 100 mensagens, foto/iniciais,
+Contatos e composer sem overflow de pagina ou sobreposicao da barra inferior.
+Backend ativo; rota de fotos retorna 401 sem JWT.
+Fotos reais do WhatsApp e validacao autenticada na sessao do usuario permanecem
+pendentes. Disponibilidade depende da privacidade e da conexao WhatsApp.
+Nenhuma migration ou alteracao de schema foi necessaria/executada.
+
+Arquivos desta etapa:
+frontend/components/app-shell.tsx
+frontend/components/sidebar-preference.ts (novo)
+frontend/components/profile-avatar.tsx (novo)
+frontend/components/profile-photo-cache.ts (novo)
+frontend/components/contacts/contact-list.tsx
+frontend/components/whatsapp/whatsapp-conversations-screen.tsx
+frontend/components/whatsapp/conversation-contact-modal.tsx
+frontend/components/whatsapp/conversation-attendance-controls.tsx (apresentacao)
+frontend/app/globals.css
+frontend/tests/sidebar-and-photos.test.mjs (novo)
+frontend/docs/reformulacao-conversas.txt
+backend/src/app.module.ts
+backend/src/profile-photos/profile-photos.module.ts (novo)
+backend/src/profile-photos/profile-photos.controller.ts (novo)
+backend/src/profile-photos/profile-photos.service.ts (novo)
+backend/src/profile-photos/profile-photos.controller.spec.ts (novo)
+backend/src/profile-photos/profile-photos.service.spec.ts (novo)
+backend/src/whatsapp-connections/whatsapp-connections.module.ts
+backend/src/whatsapp-connections/baileys/whatsapp-session-manager.service.ts
+backend/src/whatsapp-connections/baileys/whatsapp-session-manager.profile.spec.ts (novo)
+backend/src/whatsapp-connections/baileys/whatsapp-session-manager.close.spec.ts (fixture)
+backend/src/whatsapp-connections/baileys/whatsapp-session-manager.send.spec.ts (fixture)
+
+AJUSTES FINAIS DE INTERFACE - 13/10/2026
+Incorporados ao planejamento existente, sem novas fases de envio ou alteracoes no backend.
+
+Navegacao: topbar removida da arvore do AppShell (sem ocultacao por CSS).
+Conta, nome, perfil e Sair ficam no rodape lateral, em um menu de conta acessivel.
+Menu recolhido usa icone de usuario, nome acessivel e tooltip. Em telas pequenas,
+a conta ocupa a quinta posicao da navegacao inferior existente. Logout chama o
+mesmo callback do AuthProvider; autenticacao e permissoes nao foram modificadas.
+
+Imagens: card com lupa; dialog nativo em portal, foco contido e retornado ao card.
+Zoom 100-800%, botoes, roda e pinca por Pointer Events; pan limitado ao tamanho
+renderizado, restauracao e Esc. O visualizador reutiliza a URL Blob autenticada
+ja carregada pelo card: nenhuma nova chamada a API para ampliar, nenhuma URL
+publica/token. Fonte original preservada e dimensoes naturais exibidas. URLs
+continuam revogadas pelo componente de midia ao desmontar/substituir a imagem.
+Dialog remove listeners/observer e restaura overflow/foco sem rolar ancestrais.
+Card conserva altura reservada; erros permitem tentar novamente. PDF/audio
+continuam nos caminhos existentes.
+
+Divisoria: tres colunas no desktop (lista, separador de 8 px, historico).
+Lista entre 240 e 480 px, reservando pelo menos 320 px ao painel de mensagens
+nas larguras desktop; limites recalculados por ResizeObserver. Preferencia
+localStorage por ID de usuario; fallback temporario caso armazenamento bloqueado.
+Arraste com captura de ponteiro, setas +/-16 px (Shift +/-32), Home/End, Enter,
+duplo clique e botao restauram a largura. Ate 900 px a divisoria desaparece e
+permanece o fluxo existente de lista/conversa. Observacao reinicia ao exibir a
+tela, inclusive quando ela permanece montada mas oculta. Selecao, paginacao,
+filtros, ordenacao e atendimento nao foram alterados.
+
+ARQUIVOS DESTA ENTREGA
+frontend/components/app-shell.tsx
+frontend/components/icons.tsx
+frontend/components/whatsapp/whatsapp-conversations-screen.tsx
+frontend/components/whatsapp/conversation-media.tsx
+frontend/components/whatsapp/image-viewer.tsx (novo)
+frontend/components/whatsapp/image-transform.ts (novo)
+frontend/components/whatsapp/panel-width.ts (novo)
+frontend/components/whatsapp/use-conversation-split.tsx (novo)
+frontend/app/globals.css
+frontend/app/themes.css
+frontend/tests/interface-layout.test.mjs (novo)
+frontend/tests/browser-interface.mjs (novo)
+frontend/docs/reformulacao-conversas.txt
+
+VALIDACAO
+npm run lint: aprovado, sem avisos.
+npm run build: aprovado (Next.js, geracao estatica e verificacao TypeScript).
+npx tsc --noEmit --incremental false: verificacao independente.
+node --test tests/*.test.mjs: 39 testes aprovados, incluindo contrastes dos tres
+ temas, preferencias, midia autenticada, fotos e regressao da rolagem.
+node tests/browser-interface.mjs: Chrome headless isolado com componentes React
+reais (AppShell, ConversationMedia, divisor e hook de rolagem), API e usuario
+simulados; sem acesso a contas, mensagens ou sessoes reais. Aprovados mouse,
+teclado, F5, isolamento de preferencias entre contas, restauracao, callback
+logout, imagem 2560x1600 e 100x60, imagem invalida, zoom/roda/pan/pinca, Esc,
+foco, preservacao do scroll, uma busca por midia e revogacao ao desmontar.
+Historico com 100 mensagens: apertura no fim, leitura antiga preservada,
+botao ultima mensagem e acompanhamento quando proximo do fim.
+Temas Branco/Cinza/Escuro em 1440x900, 1024x768, 390x844 e 320x568: sem scroll
+da pagina e com campo de envio visivel; dialog cabe em desktop e mobile.
+Resultados e capturas temporarias: frontend/.next/interface-qa (build pode apagar).
+
+LIMITACOES / VALIDACAO REAL PENDENTE
+Confirmar no navegador autenticado com JPEG/PNG reais, nomes/previews reais,
+PDF/audio, troca de conversa e novas mensagens WhatsApp; confirmar encerramento
+da sessao no logout (no teste isolado foi validada somente a chamada do callback).
+Pinca foi validada por eventos de toque emulados no Chrome; conferir em dispositivo
+fisico/trackpad. Nao houve teste de leitor de tela ou de outros navegadores.
+Persistencia depende de localStorage permitido; quando bloqueado vale apenas
+para a sessao atual. Nenhuma migration, backend, banco ou sessao foi alterado.
+
+MENU E PREPARACAO DA FASE 2 - 13/10/2026
+Menu corrigido: expandido tem cartao contido com nome, perfil e Sair sempre
+visiveis; recolhido tem somente icone e menu de conta sob acionamento explicito.
+Fechado, o menu da conta tem display:none; ocultar o cartao nao depende de cortar
+a largura ou overflow. Dispositivo pequeno usa o mesmo menu compacto.
+Preferencia por usuario e callback de logout foram preservados.
+next.config.ts usa devIndicators:false, conforme documentacao local do Next.js.
+Essa configuracao desativa apenas o indicador de desenvolvimento e nao os erros.
+Validar o desaparecimento do indicador na instancia real de next dev apos recarga
+da configuracao; se necessario, reiniciar somente o frontend.
+
+Fase 2 de envio de anexos interrompida pela condicao expressa do usuario:
+identificado risco de envio aceito pelo WhatsApp sem registro local se o SQL
+falhar. Eventos fromMe sao descartados; nao ha recuperacao duravel automatica.
+Risco demonstrado pelo fluxo e teste existente, nao por envio real nesta etapa.
+Proposta revisavel: frontend/docs/fase-2-anexos-proposta.txt.
+Aguardando decisao sobre diario privado sem schema novo ou proposta de outbox SQL.
+Nao implementados clipe, upload ou chamada de envio de anexos; nao alterado texto.
+
+Arquivos desta etapa:
+frontend/components/app-shell.tsx
+frontend/app/globals.css
+frontend/next.config.ts
+frontend/tests/browser-interface.mjs
+frontend/docs/fase-2-anexos-proposta.txt (novo)
+frontend/docs/reformulacao-conversas.txt
+
+Verificacoes: lint frontend sem avisos, build e tsc independente aprovados;
+39 testes frontend aprovados; 24 testes backend existentes de envio e recebimento
+aprovados, sem acesso ao SQL ou WhatsApp reais. O log de persistencia falha foi
+produzido pelo teste simulado esperado, e nao pela instancia em producao.
+Envio real JPEG/PNG/WebP/PDF, limites/cancelamento de anexos e visualizacao apos
+F5 ainda nao foram testados porque a implementacao depende da decisao acima.
+
+FASE 2 AUTORIZADA E IMPLEMENTADA - 13/10/2026
+Diario privado aprovado pelo usuario; pausa anterior encerrada. Envios JPEG,
+PNG, WebP e PDF implementados com preview, validacao, estado sem percentuais,
+cancelamento antes do envio, idempotencia e recuperacao de registro sem reenviar.
+Detalhes, lista completa de arquivos e roteiro real:
+frontend/docs/fase-2-anexos-implementacao.txt.
+
+Validacao final:
+- Frontend: lint/build/TypeScript independente aprovados; 43 testes aprovados.
+- Backend: build/TypeScript independente e lint dos arquivos alterados aprovados.
+- Backend suite completa final: 234 testes aprovados, 2 ignorados existentes,
+  serial e timeout 30s. Inclui nome UTF-8 e falha local antes do transporte.
+- Lint global backend: tres erros preexistentes nos DTOs de contatos, preservados.
+- Chrome isolado com API simulada: quatro formatos, preview/cancelamento, limites,
+  invalido, clique repetido, desconexao, resultado incerto/F5/conferencia, menu,
+  logout pelo callback, resize, zoom/pinca, scroll, tres temas e quatro resolucoes.
+- Nenhum teste real de WhatsApp/SQL de producao. Sem migration ou schema novo;
+  sem mudanca de autenticacao, contatos, estado/reabertura/atribuicao ou audio.

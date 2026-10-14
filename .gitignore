@@ -1,0 +1,67 @@
+# Dependências
+node_modules/
+**/node_modules/
+
+# Variáveis de ambiente e credenciais
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Sessões e autenticação
+.whatsgestor/
+whatsapp-sessions/
+**/whatsapp-sessions/
+*.session
+*.session.json
+creds.json
+**/creds.json
+
+# Mídias e arquivos privados
+uploads/
+media/
+storage/
+private/
+temp/
+tmp/
+outbound-media-journal/
+*.bak
+*.backup
+
+# Builds
+dist/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Sistema operacional e editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Arquivos locais de configuração
+*.local
+
+# Resultados de diagnósticos e operações locais
+backend/docs/*diagnostic*.json
+backend/docs/*diagnos*.txt
+backend/docs/*result*.json
+backend/docs/*result*.txt
+backend/docs/*applied*.json
+backend/docs/*success*.txt
+backend/docs/media-migration-backup.sql
+
+# Backups e dados locais
+*.sql.bak
+*.bak
+*.backup
+*.sqlite
+*.sqlite3
