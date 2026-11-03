@@ -11,45 +11,45 @@ import {
 import { ContactType } from '../../contact-types/entities/contact-type.entity';
 import { Organization } from '../../organizations/entities/organization.entity';
 
-@Entity('contacts')
+@Entity({ name: 'contacts', schema: 'dbo' })
 @Index('IX_contacts_organizationId', ['organizationId'])
 @Index('IX_contacts_contactTypeId', ['contactTypeId'])
 export class Contact {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uniqueidentifier', nullable: true })
-  organizationId: string | null;
+  organizationId!: string | null;
 
   @ManyToOne(() => Organization, { nullable: true, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'organizationId', referencedColumnName: 'id' })
-  organization: Organization | null;
+  organization!: Organization | null;
 
   @Column({ type: 'uniqueidentifier' })
-  contactTypeId: string;
+  contactTypeId!: string;
 
   @ManyToOne(() => ContactType, { nullable: false, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'contactTypeId', referencedColumnName: 'id' })
-  contactType: ContactType;
+  contactType!: ContactType;
 
   @Column({ type: 'nvarchar', length: 150, nullable: true })
-  storeName: string | null;
+  storeName!: string | null;
 
   @Column({ type: 'nvarchar', length: 150 })
-  contactName: string;
+  contactName!: string;
 
   @Column({ type: 'nvarchar', length: 30 })
-  phone: string;
+  phone!: string;
 
   @Column({ type: 'nvarchar', length: 200, nullable: true })
-  email: string | null;
+  email!: string | null;
 
   @Column({ type: 'bit', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
-  @CreateDateColumn({ type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'datetime2', precision: 7, default: () => 'SYSUTCDATETIME()' })
+  createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'datetime2', precision: 7, default: () => 'SYSUTCDATETIME()' })
+  updatedAt!: Date;
 }

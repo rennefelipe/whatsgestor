@@ -25,10 +25,11 @@ import {
   type SettingsEntity,
   type SettingsEntityKind,
 } from "./settings-entity-modal";
-import { AppearanceSettings } from "../appearance/appearance-settings";
 import { UsersManagement } from "./users-management";
+import { organizationRole } from "../organization-role";
+import { organizationTreeRows } from "./organization-tree";
 
-type SettingsSection =
+export type SettingsSection =
   | "organization-types"
   | "organizations"
   | "contact-types"
@@ -119,9 +120,9 @@ function getHierarchy(organizations: Organization[]): {
   return result;
 }
 
-export function SettingsContent() {
+export function SettingsContent({ initialSection = "organizations" }: { initialSection?: SettingsSection }) {
   const { user } = useAuth();
-  const [section, setSection] = useState<SettingsSection>("organization-types");
+  const section = initialSection;
   const [organizationTypes, setOrganizationTypes] = useState<
     OrganizationType[]
   >([]);
@@ -248,6 +249,7 @@ export function SettingsContent() {
     kind: SettingsEntityKind,
     entity: OrganizationType | Organization | ContactType,
   ) {
+    if (entity.isActive && !window.confirm(`Inativar ${entity.name}? O cadastro e seus vínculos serão preservados.`)) return;
     setBusyId(entity.id);
     setActionError("");
     try {
@@ -341,9 +343,9 @@ export function SettingsContent() {
         <div className="page-heading">
           <div>
             <p className="eyebrow">Preferências do sistema</p>
-            <h1>Configurações</h1>
+            <h1 id="settings-area-heading">{sections.find(item => item.id === currentSection)?.label}</h1>
             <p className="page-subtitle">
-              Gerencie organizações, tipos e identificação dos contatos.
+              Gerencie os cadastros e as preferências desta área.
             </p>
           </div>
           {currentSection !== "contact-identification" &&
@@ -359,36 +361,10 @@ export function SettingsContent() {
             )}
         </div>
 
-        <AppearanceSettings />
         <div
-          aria-label="Seções de configurações"
-          className="settings-tabs"
-          role="tablist"
-        >
-          {sections
-            .filter((item) => item.id !== "users" || user?.isAdmin)
-            .map((item) => (
-              <button
-                aria-selected={currentSection === item.id}
-                className={`settings-tab${currentSection === item.id ? " active" : ""}`}
-                id={`settings-tab-${item.id}`}
-                key={item.id}
-                onClick={() => {
-                  setSection(item.id);
-                  setActionError("");
-                }}
-                role="tab"
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
-        </div>
-
-        <div
-          aria-labelledby={`settings-tab-${currentSection}`}
+          aria-labelledby="settings-area-heading"
           className="settings-panel"
-          role="tabpanel"
+          role="region"
         >
           {loadError && (
             <div className="inline-error" role="alert">
@@ -526,6 +502,7 @@ export function SettingsContent() {
             </section>
           ) : (
             <EntityList
+              key={currentSection}
               busyId={busyId}
               contactTypes={contactTypes}
               hierarchy={hierarchy}
@@ -581,17 +558,22 @@ function EntityList({
   onEdit,
   onToggleActive,
 }: EntityListProps) {
-  const rows: {
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [typeId, setTypeId] = useState("");
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set(hierarchy.flatMap(({ organization }) => organization.parentOrganizationId ? [organization.parentOrganizationId] : [])));
+  const organizationView = organizationTreeRows(hierarchy, { search, status, typeId }, collapsed);
+  const allRows: {
     entity: OrganizationType | Organization | ContactType;
     depth?: number;
+    childCount?: number;
+    isExpanded?: boolean;
+    contextOnly?: boolean;
   }[] =
     kind === "organization-types"
       ? organizationTypes.map((entity) => ({ entity }))
       : kind === "organizations"
-        ? hierarchy.map(({ organization, depth }) => ({
-            entity: organization,
-            depth,
-          }))
+        ? organizationView.items.map(({ organization, ...details }) => ({ entity: organization, ...details }))
         : contactTypes.map((entity) => ({ entity }));
   const emptyLabel =
     kind === "organization-types"
@@ -600,15 +582,29 @@ function EntityList({
         ? "Nenhuma organização cadastrada"
         : "Nenhum tipo de contato cadastrado";
   const isOrganizationList = kind === "organizations";
+  const rows = kind === "organizations" ? allRows : allRows.filter(({ entity }) => {
+    const organization = "organizationTypeId" in entity ? entity : null;
+    const parent = hierarchy.find(row => row.organization.id === organization?.parentOrganizationId)?.organization.name;
+    const type = organizationTypes.find(type => type.id === organization?.organizationTypeId)?.name;
+    return (!search || [entity.name, parent, type].some(value => value?.toLocaleLowerCase("pt-BR").includes(search.toLocaleLowerCase("pt-BR"))))
+      && (!status || String(entity.isActive) === status)
+      && (!typeId || organization?.organizationTypeId === typeId);
+  });
 
   return (
     <>
+      <div className="entity-toolbar">
+        <label className="search-field"><Icon name="search" size={17} /><span className="sr-only">Buscar cadastros</span><input type="search" placeholder="Buscar por nome, tipo ou vínculo" value={search} onChange={event => { setSearch(event.target.value); setCollapsed(new Set()); }} /></label>
+        <label className="contact-filter-field"><span>Situação</span><select value={status} onChange={event => { setStatus(event.target.value); setCollapsed(new Set()); }}><option value="">Todas</option><option value="true">Ativos</option><option value="false">Inativos</option></select></label>
+        {isOrganizationList && <label className="contact-filter-field"><span>Tipo</span><select value={typeId} onChange={event => { setTypeId(event.target.value); setCollapsed(new Set()); }}><option value="">Todos os tipos</option>{organizationTypes.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}</select></label>}
+      </div>
       <div className="results-summary">
         <span>
-          {rows.length} {rows.length === 1 ? "cadastro" : "cadastros"}
+          {isOrganizationList ? organizationView.matchCount : rows.length} {(isOrganizationList ? organizationView.matchCount : rows.length) === 1 ? "cadastro" : "cadastros"}
         </span>
+        {isOrganizationList && <div className="organization-tree-controls"><button type="button" className="secondary-button" onClick={() => setCollapsed(new Set())}>Expandir todos</button><button type="button" className="secondary-button" onClick={() => setCollapsed(new Set(organizationView.parentIds))}>Recolher todos</button></div>}
       </div>
-      <div className="table-panel settings-table-panel">
+      <div className={`table-panel settings-table-panel${isOrganizationList ? " organization-tree-panel" : ""}`}>
         {rows.length === 0 ? (
           <div className="empty-state">
             <strong>{emptyLabel}</strong>
@@ -616,14 +612,14 @@ function EntityList({
           </div>
         ) : (
           <div className="contact-table-scroll">
-            <table className="settings-table">
+            <table className="settings-table settings-entities-table">
               <thead>
                 <tr>
                   <th>Nome</th>
                   {isOrganizationList && (
                     <>
                       <th>Tipo</th>
-                      <th>Organização pai</th>
+                      <th>Grupo responsável / Vínculo</th>
                     </>
                   )}
                   <th>Situação</th>
@@ -631,7 +627,7 @@ function EntityList({
                 </tr>
               </thead>
               <tbody>
-                {rows.map(({ entity, depth = 0 }) => {
+                {rows.map(({ entity, depth = 0, childCount = 0, isExpanded, contextOnly }) => {
                   const organization =
                     isOrganizationList && "organizationTypeId" in entity
                       ? entity
@@ -651,8 +647,8 @@ function EntityList({
                       "—")
                     : "—";
                   return (
-                    <tr key={entity.id}>
-                      <td>
+                    <tr key={entity.id} className={contextOnly ? "organization-context-row" : undefined}>
+                      <td data-label="Nome">
                         <span
                           className={
                             depth > 0
@@ -665,6 +661,7 @@ function EntityList({
                               : undefined
                           }
                         >
+                          {isOrganizationList && childCount > 0 && <button type="button" className="organization-tree-toggle" aria-expanded={isExpanded} aria-label={`${isExpanded ? "Recolher" : "Expandir"} ${entity.name}`} onClick={() => setCollapsed(current => { const next = new Set(current); if (next.has(entity.id)) next.delete(entity.id); else next.add(entity.id); return next; })}><span aria-hidden="true">{isExpanded ? "▾" : "▸"}</span></button>}
                           {depth > 0 && (
                             <span
                               aria-hidden="true"
@@ -674,12 +671,20 @@ function EntityList({
                             </span>
                           )}
                           {entity.name}
+                          {isOrganizationList && (childCount > 0 || organizationRole(typeName) === "group") && <small className="organization-child-count">{childCount} {childCount === 1 ? "vinculada" : "vinculadas"}</small>}
+                          {contextOnly && <small className="organization-child-count">Contexto do vínculo</small>}
                         </span>
                       </td>
                       {isOrganizationList && (
                         <>
-                          <td>{typeName}</td>
-                          <td>{parentName}</td>
+                          <td data-label="Tipo">{typeName}</td>
+                          <td data-label="Grupo responsável / Vínculo">
+                            {organizationRole(typeName) === "shopping"
+                              ? parentName
+                              : organization?.parentOrganizationId
+                                ? `Organização pai: ${parentName}`
+                                : "—"}
+                          </td>
                         </>
                       )}
                       <td>

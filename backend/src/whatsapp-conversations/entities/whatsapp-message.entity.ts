@@ -10,7 +10,7 @@ import {
 
 import { WhatsappMessageMedia } from './whatsapp-message-media.entity';
 
-@Entity('whatsapp_messages')
+@Entity({ name: 'whatsapp_messages', schema: 'dbo' })
 @Index(
   'UQ_whatsapp_messages_conversation_message_fromMe',
   ['conversationId', 'whatsappMessageId', 'fromMe'],
@@ -18,40 +18,40 @@ import { WhatsappMessageMedia } from './whatsapp-message-media.entity';
 )
 export class WhatsappMessage {
   @OneToOne(() => WhatsappMessageMedia, (media) => media.message)
-  media: WhatsappMessageMedia | null;
+  media!: WhatsappMessageMedia | null;
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uniqueidentifier' })
-  conversationId: string;
+  conversationId!: string;
 
   @Column({ type: 'nvarchar', length: 255 })
-  whatsappMessageId: string;
+  whatsappMessageId!: string;
 
   @Column({ type: 'bit' })
-  fromMe: boolean;
+  fromMe!: boolean;
 
   @Column({ type: 'nvarchar', length: 50, default: 'text' })
-  messageType: string;
+  messageType!: string;
 
-  @Column({ type: 'nvarchar', nullable: true })
-  textContent: string | null;
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  textContent!: string | null;
 
-  @Column({ type: 'datetime2', nullable: true })
-  messageTimestamp: Date | null;
+  @Column({ type: 'datetime2', precision: 7, nullable: true })
+  messageTimestamp!: Date | null;
 
   @Column({ type: 'nvarchar', length: 30, default: 'received' })
-  status: string;
+  status!: string;
 
   @CreateDateColumn({
-    type: 'datetime2',
+    type: 'datetime2', precision: 7,
     default: () => 'SYSUTCDATETIME()',
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({
-    type: 'datetime2',
+    type: 'datetime2', precision: 7,
     default: () => 'SYSUTCDATETIME()',
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 }

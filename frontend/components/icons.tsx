@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 
 export type IconName =
+  | "bulk-send"
   | "contacts"
   | "whatsapp"
   | "conversations"
@@ -23,6 +24,12 @@ export type IconName =
   | "stop";
 
 const paths: Record<IconName, React.ReactNode> = {
+  "bulk-send": (
+    <>
+      <path d="m3 4 18 8-18 8 4-8-4-8ZM7 12h14" />
+      <path d="M3 8H1M3 16H1" />
+    </>
+  ),
   stop: <rect x="7" y="7" width="10" height="10" rx="1" />,
   microphone: (
     <>

@@ -71,15 +71,23 @@ export function ConversationMedia({ message }: { message: WhatsappMessage }) {
     }
   }
   if (!media)
-    return <p className="conversation-media-state">Mídia indisponível.</p>;
+    return (
+      <p className="conversation-media-state">
+        Os dados do anexo não estão disponíveis nesta consulta. O registro da
+        mensagem foi preservado.
+      </p>
+    );
   const previewClass = `conversation-media-preview ${media.kind}`;
   if (media.availability !== "ready")
     return (
       <div className={previewClass}>
+        {media.originalName && (
+          <p className="conversation-media-name">{media.originalName}</p>
+        )}
         <p className="conversation-media-state" role="status">
           {media.availability === "pending"
             ? "Processando mídia..."
-            : "Não foi possível disponibilizar esta mídia."}
+            : "Não foi possível recuperar este arquivo. Os dados da mensagem foram preservados."}
         </p>
       </div>
     );
@@ -136,6 +144,20 @@ export function ConversationMedia({ message }: { message: WhatsappMessage }) {
                   setError("Este navegador não conseguiu reproduzir o áudio.")
                 }
                 preload="metadata"
+                onLoadedMetadata={(event) => {
+                  const audio = event.currentTarget;
+                  if (!Number.isFinite(audio.duration) || audio.duration <= 0) {
+                    audio.currentTime = 1e10;
+                  }
+                }}
+                onDurationChange={(event) => {
+                  const audio = event.currentTarget;
+                  if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                    if (audio.currentTime > audio.duration) {
+                      audio.currentTime = 0;
+                    }
+                  }
+                }}
                 aria-label={
                   message.fromMe
                     ? "Áudio enviado pelo WhatsApp"

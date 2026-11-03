@@ -1,5 +1,7 @@
 "use client";
 
+import { FullTextSelect } from "../full-text-select";
+
 import {
   useCallback,
   useEffect,
@@ -30,6 +32,8 @@ import {
   canSendConversationMessage,
 } from "./conversation-attendance";
 import { useMessageScroll } from "./use-message-scroll";
+import { loadRecentHistory } from "./message-history";
+import { textAttemptKey, clearTextAttempt } from './text-send-attempt';
 import { useConversationSplit } from "./use-conversation-split";
 import { ProfileAvatar } from "../profile-avatar";
 import { AttachmentComposer } from "./attachment-composer";
@@ -127,7 +131,7 @@ export function WhatsappConversationsScreen({
   const [attachmentOccupied, setAttachmentOccupied] = useState(true);
   const [audioOccupied, setAudioOccupied] = useState(false);
   const [connectionFilter, setConnectionFilter] = useState("");
-  const [category, setCategory] = useState<AttendanceCategory>("waiting");
+  const [category, setCategory] = useState<AttendanceCategory>("all");
   const [search, setSearch] = useState("");
   const categoryRef = useRef<AttendanceCategory>("waiting");
   const searchRef = useRef("");
@@ -182,7 +186,8 @@ export function WhatsappConversationsScreen({
     signal: AbortSignal;
     revision: number;
   } | null>(null);
-  const messagesBusy = useRef(false);
+  const messagesBusy = useRef<{ signal: AbortSignal; id: string } | null>(null);
+  const latestMessagesPage = useRef(0);
   const olderMessagesBusy = useRef(false);
   const conversationsRef = useRef(conversations);
   const selectedConversationRef = useRef<WhatsappConversation | null>(null);
@@ -195,7 +200,10 @@ export function WhatsappConversationsScreen({
     );
     const currentId = selectedConversationRef.current?.id;
     const selection =
-      visible.find((item) => item.id === currentId) ?? visible[0] ?? null;
+      visible.find((item) => item.id === currentId) ??
+      (currentId
+        ? items.find((item) => item.id === currentId) ?? selectedConversationRef.current
+        : visible[0] ?? null);
     if (selection?.id !== currentId) {
       setMessages([]);
       setMessageTotal(0);
@@ -317,40 +325,40 @@ export function WhatsappConversationsScreen({
   const refreshSelectedMessages = useCallback(
     async (signal: AbortSignal, initial = false) => {
       const selected = selectedConversationRef.current;
-      if (!selected || messagesBusy.current || signal.aborted) return;
-      messagesBusy.current = true;
+      if (!selected || signal.aborted) return;
+      if (
+        messagesBusy.current?.id === selected.id &&
+        !messagesBusy.current.signal.aborted
+      )
+        return;
+      const request = { signal, id: selected.id };
+      messagesBusy.current = request;
       if (initial) setIsLoadingMessages(true);
       setMessagesError("");
       try {
-        const firstPage = await getWhatsappConversationMessages(
-          selected.id,
-          { page: 1, pageSize: MESSAGE_PAGE_SIZE },
-          signal,
+        const previousLatest = latestMessagesPage.current;
+        const latest = await loadRecentHistory(
+          (page) =>
+            getWhatsappConversationMessages(
+              selected.id,
+              { page, pageSize: MESSAGE_PAGE_SIZE },
+              signal,
+            ),
+          MESSAGE_PAGE_SIZE,
+          previousLatest,
         );
-        if (
-          signal.aborted ||
-          selectedConversationRef.current?.id !== selected.id
-        )
-          return;
-        const lastPage = Math.max(
-          1,
-          Math.ceil(firstPage.total / MESSAGE_PAGE_SIZE),
-        );
-        const latest =
-          lastPage === 1
-            ? firstPage
-            : await getWhatsappConversationMessages(
-                selected.id,
-                { page: lastPage, pageSize: MESSAGE_PAGE_SIZE },
-                signal,
-              );
         if (
           signal.aborted ||
           selectedConversationRef.current?.id !== selected.id
         )
           return;
         setMessages((current) => mergeMessages(current, latest.items));
-        setMessagePage(lastPage);
+        latestMessagesPage.current = latest.latestPage;
+        setMessagePage((current) =>
+          previousLatest === 0
+            ? latest.firstLoadedPage
+            : Math.min(current, latest.firstLoadedPage),
+        );
         setMessageTotal(latest.total);
       } catch (error) {
         if (
@@ -359,7 +367,7 @@ export function WhatsappConversationsScreen({
         )
           setMessagesError(errorMessage(error));
       } finally {
-        messagesBusy.current = false;
+        if (messagesBusy.current === request) messagesBusy.current = null;
         if (
           !signal.aborted &&
           selectedConversationRef.current?.id === selected.id &&
@@ -385,7 +393,7 @@ export function WhatsappConversationsScreen({
     if (!isVisible || !selectedConversationId) return;
     const selectedId = selectedConversationId;
     const controller = new AbortController();
-    messagesBusy.current = false;
+    latestMessagesPage.current = 0;
     const initialTimer = window.setTimeout(
       () => void refreshSelectedMessages(controller.signal, true),
       0,
@@ -411,23 +419,26 @@ export function WhatsappConversationsScreen({
       )
     : undefined;
   const canSend = selectedConnection?.status === "connected";
+  const sendDisabled=selectedConnection?.sendingEnabled===false;
   const canRespond =
     !!selectedConversation &&
     canSend &&
+    !sendDisabled &&
     !!selectedConnection?.isActive &&
     canSendConversationMessage(user, selectedConversation);
   const sendRestriction = !selectedConversation
     ? ""
     : !canSend || !selectedConnection?.isActive
       ? "Para responder, conecte e ative esta conexão WhatsApp."
+      : sendDisabled
+        ? "Envio desabilitado pela política administrativa. Solicite autorização ao administrador."
       : selectedConversation.attendanceStatus === "waiting"
         ? "Inicie o atendimento para responder a esta conversa."
         : selectedConversation.attendanceStatus === "finished"
           ? "Reabra o atendimento para responder a esta conversa."
           : !user?.isActive
             ? "Seu usuário não está ativo para responder."
-            : !user.isAdmin &&
-                selectedConversation.assignedUserId !== user.id
+            : !user.isAdmin && selectedConversation.assignedUserId !== user.id
               ? "Somente o responsável pelo atendimento ou um administrador pode responder."
               : "";
 
@@ -473,7 +484,9 @@ export function WhatsappConversationsScreen({
     setIsSending(true);
     setSendError("");
     try {
-      const message = await sendWhatsappText(conversation.id, { textContent });
+      const key=await textAttemptKey(conversation.id,textContent);
+      const message = await sendWhatsappText(conversation.id, { textContent },key);
+      clearTextAttempt(conversation.id);
       if (selectedConversationRef.current?.id === conversation.id) {
         followSentMessage();
         setMessages((current) => mergeMessages(current, [message]));
@@ -485,12 +498,12 @@ export function WhatsappConversationsScreen({
     } catch (error) {
       const apiError = error instanceof ApiRequestError ? error : null;
       const possibleAcceptance =
-        apiError === null || apiError.status === 0 || apiError.status >= 500;
+        apiError?.dispatchAttempted!==false&&(apiError === null || apiError.status === 0 || apiError.status >= 500||apiError.code==='SEND_CONFIRMATION_UNCERTAIN');
       setSendError(
         `${errorMessage(error)}${
           possibleAcceptance
             ? " O envio pode ter sido aceito antes da falha; verifique a conversa antes de tentar novamente."
-            : " Verifique a conversa antes de tentar novamente."
+            : ""
         }`,
       );
     } finally {
@@ -673,7 +686,7 @@ export function WhatsappConversationsScreen({
         <div className="conversations-toolbar">
           <label className="conversation-connection-filter">
             <span className="sr-only">Conexão WhatsApp</span>
-            <select
+            <FullTextSelect
               className="filter-select"
               onChange={(event) =>
                 handleConnectionFilterChange(event.target.value)
@@ -686,7 +699,7 @@ export function WhatsappConversationsScreen({
                   {connection.name}
                 </option>
               ))}
-            </select>
+            </FullTextSelect>
           </label>
           <label className="conversation-search">
             <span className="sr-only">Buscar nesta página</span>
@@ -822,14 +835,12 @@ export function WhatsappConversationsScreen({
                   />
                   <span className="conversation-item-copy">
                     <strong>{conversationName(conversation)}</strong>
-                    {conversation.id === selectedConversation?.id &&
-                      !isLoadingMessages &&
-                      conversationPreview(conversation, messages) && (
+                    {conversationPreview(conversation, conversation.id === selectedConversation?.id ? messages : []) && (
                         <span
                           className="conversation-message-preview"
-                          title={conversationPreview(conversation, messages)}
+                          title={conversationPreview(conversation, conversation.id === selectedConversation?.id ? messages : [])}
                         >
-                          {conversationPreview(conversation, messages)}
+                          {conversationPreview(conversation, conversation.id === selectedConversation?.id ? messages : [])}
                         </span>
                       )}
                     {conversationPhone(conversation) && (
@@ -1068,9 +1079,7 @@ export function WhatsappConversationsScreen({
                   </div>
                 )}
                 {sendRestriction && (
-                  <p className="conversation-send-hint">
-                    {sendRestriction}
-                  </p>
+                  <p className="conversation-send-hint">{sendRestriction}</p>
                 )}
                 <AttachmentComposer
                   key={selectedConversation.id + "/" + user?.id}
@@ -1080,7 +1089,10 @@ export function WhatsappConversationsScreen({
                   onOccupied={setAttachmentOccupied}
                   onSent={handleMediaSent}
                 >
-                  {({ button: attachmentButton, preview: attachmentPreview }) => (
+                  {({
+                    button: attachmentButton,
+                    preview: attachmentPreview,
+                  }) => (
                     <AudioRecorder
                       conversationId={selectedConversation.id}
                       allowed={

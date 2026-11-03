@@ -1,36 +1,7 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WhatsGestor frontend - v1.0.0
 
-## Getting Started
+Interface Next.js 16.4.0 / React 19.3.0. Consulte o [README principal](../README.md) e o [guia Windows](../docs/INSTALACAO-WINDOWS.md).
 
-First, run the development server:
+Configure .env.local a partir de .env.example com a origem publica da API antes do build. Execute npm run build e npm run start -- --hostname 127.0.0.1 para servir a versao compilada na porta 3000, com gerenciamento externo do processo e proxy HTTPS. A API e um processo separado; a aplicacao nao e um site estatico exportavel.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Validacao isolada: npm run typecheck, npm run build, npm run lint e npm test. Os scripts tests/browser-*.mjs usam Chrome local e API simulada. Nao execute builds/testes no diretorio de uma instancia ativa. Veja requisitos e resultados no relatorio de preparacao da versao.

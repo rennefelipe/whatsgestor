@@ -1,57 +1,51 @@
+﻿
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { join } from 'node:path';
-import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { resolve } from 'node:path';
+import { validateEnvironment } from './config/environment';
+import { createDatabaseOptions, initializeDataSource } from './config/database';
+import { HealthController } from './health/health.controller';
+import { AuthModule } from './auth/auth.module';
+import { OrganizationTypesModule } from './organization-types/organization-types.module';
+import { OrganizationsModule } from './organizations/organizations.module';
+import { ContactTypesModule } from './contact-types/contact-types.module';
 import { ContactDisplaySettingsModule } from './contact-display-settings/contact-display-settings.module';
 import { ContactsModule } from './contacts/contacts.module';
-import { ContactTypesModule } from './contact-types/contact-types.module';
-import { OrganizationsModule } from './organizations/organizations.module';
-import { OrganizationTypesModule } from './organization-types/organization-types.module';
-import { UsersModule } from './users/users.module';
-import { WhatsappConnectionsModule } from './whatsapp-connections/whatsapp-connections.module';
 import { WhatsappConversationsModule } from './whatsapp-conversations/whatsapp-conversations.module';
-import { migrationFiles } from './database/migration-files';
-import { ProfilePhotosModule } from './profile-photos/profile-photos.module';
+import { MessagesModule } from './messages/messages.module';
+import { WhatsappIntegrationModule } from './whatsapp-integration/whatsapp-integration.module';
+import { BulkSendModule } from './bulk-send/bulk-send.module';
+import { AutomaticMessagesModule } from './automatic-messages/automatic-messages.module';
+import { DataExchangeModule } from './data-exchange/data-exchange.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: resolve(__dirname, '..', '.env'),
+      validate: validateEnvironment,
+    }),
+
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => createDatabaseOptions(config),
+      dataSourceFactory: initializeDataSource,
+    }),
+    AuthModule,
     OrganizationTypesModule,
     OrganizationsModule,
     ContactTypesModule,
-    ContactsModule,
     ContactDisplaySettingsModule,
-    UsersModule,
-    WhatsappConnectionsModule,
+    ContactsModule,
     WhatsappConversationsModule,
-    ProfilePhotosModule,
-    AuthModule,
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
-        type: 'mssql',
-        host: configService.getOrThrow<string>('DB_HOST'),
-        port: Number(configService.getOrThrow<string>('DB_PORT')),
-        username: configService.getOrThrow<string>('DB_USERNAME'),
-        password: configService.getOrThrow<string>('DB_PASSWORD'),
-        database: configService.getOrThrow<string>('DB_DATABASE'),
-        autoLoadEntities: true,
-        synchronize: false,
-        options: {
-          encrypt: false,
-          trustServerCertificate: true,
-          // Attendance uses SYSUTCDATETIME; message parameters must use UTC too.
-          useUTC: true,
-        },
-        migrations: [migrationFiles(join(__dirname, 'database', 'migrations'))],
-      }),
-    }),
+    MessagesModule,
+    WhatsappIntegrationModule,
+    BulkSendModule,
+    AutomaticMessagesModule,
+    DataExchangeModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, HealthController],
 })
 export class AppModule {}

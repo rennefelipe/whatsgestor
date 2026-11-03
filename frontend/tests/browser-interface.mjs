@@ -57,7 +57,7 @@ fs.writeFileSync(
 fs.writeFileSync(
   path.join(directory, "entry.tsx"),
   `import {useState} from 'react';import {createRoot} from 'react-dom/client';import {AppShell} from ${sourcePath("components/app-shell")};import {ConversationMedia} from ${sourcePath("components/whatsapp/conversation-media")};import {useConversationSplit} from ${sourcePath("components/whatsapp/use-conversation-split")};import {useMessageScroll} from ${sourcePath("components/whatsapp/use-message-scroll")};import {AttachmentComposer} from ${sourcePath("components/whatsapp/attachment-composer")};
-function Panels(){const [allowed,setAllowed]=useState(true);window.qaSetAttachmentAllowed=setAllowed;const {layoutRef,style,separator,reset}=useConversationSplit();const [visible,setVisible]=useState(true);const [version,setVersion]=useState(0);const [messages,setMessages]=useState(Array.from({length:100},(_,i)=>({id:String(i)})));window.qaAppend=()=>setMessages(m=>[...m,{id:String(m.length)}]);window.qaHide=()=>setVisible(false);window.qaRemount=()=>{setVisible(true);setVersion(v=>v+1);};const {viewportRef,contentRef,onScroll,showLatest,latest,followSentMessage}=useMessageScroll('qa-chat',messages,false);return <main className="main-content conversations-content"><section ref={layoutRef} style={style} className="conversations-layout mobile-show-chat"><aside id="conversation-list" className="conversation-list-panel"><div className="conversation-list-heading">Conversas<button className="split-reset" onClick={reset}>Restaurar</button></div><div className="conversation-items">Cliente</div></aside>{separator}<section id="conversation-chat" className="conversation-chat-panel"><div className="conversation-chat-header">Cliente</div><div className="conversation-history"><div ref={viewportRef} onScroll={onScroll} className="conversation-messages"><div ref={contentRef} className="conversation-messages-content">{messages.map(m=><article data-message-id={m.id} key={m.id} style={{minHeight:50}}>Mensagem {m.id}</article>)}{visible&&<ConversationMedia key={version} message={{id:'media-'+version,conversationId:'qa-chat',media:{kind:'image',availability:'ready',sizeBytes:10}}}/>}</div></div>{showLatest&&<button className="conversation-go-latest" onClick={latest}>Ir para a última mensagem</button>}</div><form className="conversation-composer" onSubmit={e=>e.preventDefault()}><AttachmentComposer conversationId="qa-chat" allowed={allowed} onBusy={()=>{}} onSent={message=>{window.qaLastAttachment=message;followSentMessage();setMessages(m=>m.some(row=>row.id===message.id)?m:[...m,message]);}}>{({button,preview})=><>{preview}<div className="conversation-composer-row">{button}<textarea aria-label="Mensagem" rows={2}/><button type="submit">Enviar</button></div></>}</AttachmentComposer></form></section></section></main>;}createRoot(document.getElementById('root')).render(<AppShell>{()=> <Panels/>}</AppShell>);`,
+function Panels(){const [allowed,setAllowed]=useState(true);window.qaSetAttachmentAllowed=setAllowed;const {layoutRef,style,separator,reset}=useConversationSplit();const [visible,setVisible]=useState(true);const [version,setVersion]=useState(0);const [messages,setMessages]=useState(Array.from({length:100},(_,i)=>({id:String(i)})));window.qaAppend=()=>setMessages(m=>[...m,{id:String(m.length)}]);window.qaHide=()=>setVisible(false);window.qaRemount=()=>{setVisible(true);setVersion(v=>v+1);};const {viewportRef,contentRef,onScroll,showLatest,latest,followSentMessage}=useMessageScroll('qa-chat',messages,false);return <main className="main-content conversations-content"><section ref={layoutRef} style={style} className="conversations-layout mobile-show-chat"><aside id="conversation-list" className="conversation-list-panel"><div className="conversation-list-heading">Conversas<button className="split-reset" onClick={reset}>Restaurar</button></div><div className="conversation-items">Cliente</div></aside>{separator}<section id="conversation-chat" className="conversation-chat-panel"><div className="conversation-chat-header">Cliente</div><div className="conversation-history"><div ref={viewportRef} onScroll={onScroll} className="conversation-messages"><div ref={contentRef} className="conversation-message-content">{messages.map(m=><article data-message-id={m.id} key={m.id} style={{minHeight:50}}>Mensagem {m.id}</article>)}{visible&&<ConversationMedia key={version} message={{id:'media-'+version,conversationId:'qa-chat',media:{kind:'image',availability:'ready',sizeBytes:10}}}/>}</div></div>{showLatest&&<button className="conversation-go-latest" onClick={latest}>Ir para a última mensagem</button>}</div><form className="conversation-composer" onSubmit={e=>e.preventDefault()}><AttachmentComposer conversationId="qa-chat" allowed={allowed} onBusy={()=>{}} onSent={message=>{window.qaLastAttachment=message;followSentMessage();setMessages(m=>m.some(row=>row.id===message.id)?m:[...m,message]);}}>{({button,preview})=><>{preview}<div className="conversation-composer-row">{button}<textarea aria-label="Mensagem" rows={2}/><button type="submit">Enviar</button></div></>}</AttachmentComposer></form></section></section></main>;}createRoot(document.getElementById('root')).render(<AppShell>{()=> <Panels/>}</AppShell>);`,
 );
 await new Promise((resolve, reject) =>
   webpack(
@@ -101,6 +101,7 @@ const chrome = spawn(
   [
     "--headless=new",
     "--disable-gpu",
+    "--no-sandbox",
     "--no-first-run",
     "--no-default-browser-check",
     "--remote-debugging-port=0",
@@ -123,6 +124,10 @@ try {
   await new Promise((resolve) => socket.once("open", resolve));
   let id = 0;
   const pending = new Map();
+  socket.on("close", () => {
+    for (const entry of pending.values()) entry.reject(Error("Browser connection closed"));
+    pending.clear();
+  });
   socket.on("message", (raw) => {
     const message = JSON.parse(raw);
     if (message.id) {
@@ -135,7 +140,8 @@ try {
   const send = (method, params = {}) =>
     new Promise((resolve, reject) => {
       const next = ++id;
-      pending.set(next, { resolve, reject });
+      const timer = setTimeout(() => { pending.delete(next); reject(Error(`Browser timeout: ${method}`)); }, 15000);
+      pending.set(next, { resolve: (value) => { clearTimeout(timer); resolve(value); }, reject: (error) => { clearTimeout(timer); reject(error); } });
       socket.send(JSON.stringify({ id: next, method, params }));
     });
   const evaluate = async (expression) => {
@@ -171,7 +177,7 @@ try {
     if (message.method === "Runtime.exceptionThrown")
       console.error(JSON.stringify(message.params));
   });
-  await send("Runtime.enable");
+  // Runtime.evaluate does not require the optional exception event stream.
   await send("Page.enable");
   const metrics = async (width, height) => {
     await send("Emulation.setDeviceMetricsOverride", {

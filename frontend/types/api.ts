@@ -21,6 +21,7 @@ export interface ContactType {
 }
 
 export interface Contact {
+  organizationContext?: OrganizationContext | null;
   id: string;
   organizationId: string | null;
   contactTypeId: string;
@@ -31,6 +32,19 @@ export interface Contact {
   isActive: boolean;
   organization: Organization | null;
   contactType: ContactType;
+}
+
+export interface OrganizationContext {
+  organizationId: string;
+  organizationType: string | null;
+  group: { id: string; name: string } | null;
+  shopping: { id: string; name: string } | null;
+  hierarchyIssue: string | null;
+}
+
+export interface ContactOptions {
+  organizationContexts: OrganizationContext[];
+  storeNames: string[];
 }
 
 export type ContactDisplayField =
@@ -58,11 +72,18 @@ export interface ContactPayload {
 }
 
 export interface ApiErrorPayload {
+  code?: string;
+  dispatchAttempted?: boolean;
   message?: string | string[];
   error?: string;
 }
 
+export type UserRole = "administrator" | "attendant" | "tester";
+
 export interface AuthenticatedUser {
+  fullName?: string | null;
+  email?: string | null;
+  role?: UserRole;
   id: string;
   username: string;
   isAdmin: boolean;
@@ -78,6 +99,9 @@ export interface LoginResponse {
 }
 
 export interface CreateUserPayload {
+  fullName?: string;
+  email?: string | null;
+  role?: UserRole;
   username: string;
   password: string;
   isAdmin: boolean;
@@ -86,6 +110,9 @@ export interface CreateUserPayload {
 }
 
 export interface UpdateUserPayload {
+  fullName?: string;
+  email?: string | null;
+  role?: UserRole;
   username?: string;
   password?: string;
   isAdmin?: boolean;
@@ -102,10 +129,13 @@ export type WhatsappConnectionStatus =
   | "error";
 
 export interface WhatsappConnection {
+  sendingEnabled?: boolean;
   id: string;
   name: string;
   phoneNumber: string | null;
   status: WhatsappConnectionStatus;
+  authenticationIssue?: string | null;
+  requiresPairingRecovery?: boolean;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -114,6 +144,7 @@ export interface WhatsappConnection {
 }
 
 export interface WhatsappConversation {
+  lastMessage?: Pick<WhatsappMessage, "id" | "conversationId" | "messageType" | "textContent" | "fromMe" | "messageTimestamp" | "createdAt"> | null;
   id: string;
   connectionId: string;
   remoteJid: string;
@@ -162,8 +193,11 @@ export interface PaginatedResponse<T> {
 }
 
 export interface WhatsappConnectionStatusResponse {
+  sendingEnabled?: boolean;
   id: string;
   status: WhatsappConnectionStatus;
+  authenticationIssue?: string | null;
+  requiresPairingRecovery?: boolean;
   phoneNumber: string | null;
   lastConnectedAt: string | null;
   lastDisconnectedAt: string | null;

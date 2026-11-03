@@ -9,6 +9,10 @@ export function getUsers(signal?: AbortSignal): Promise<AuthenticatedUser[]> {
   return apiRequest<AuthenticatedUser[]>("/users", { signal });
 }
 
+export function getUsersSchema(signal?: AbortSignal): Promise<{ profileFieldsAvailable: boolean }> {
+  return apiRequest("/users/schema", { signal });
+}
+
 export function createUser(
   payload: CreateUserPayload,
 ): Promise<AuthenticatedUser> {

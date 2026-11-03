@@ -9,6 +9,8 @@ export class ApiRequestError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    readonly code?: string,
+    readonly dispatchAttempted?: boolean,
   ) {
     super(message);
     this.name = "ApiRequestError";
@@ -86,6 +88,8 @@ export async function apiRequest<T>(
     throw new ApiRequestError(
       getErrorMessage(payload, responseErrorMessage(response.status, path)),
       response.status,
+      typeof (payload as ApiErrorPayload)?.code==='string'?(payload as ApiErrorPayload).code:undefined,
+      typeof (payload as ApiErrorPayload)?.dispatchAttempted==='boolean'?(payload as ApiErrorPayload).dispatchAttempted:undefined,
     );
   }
 

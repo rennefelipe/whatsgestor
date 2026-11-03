@@ -6,20 +6,20 @@ import {
   Column,
 } from 'typeorm';
 
-@Entity('organization_types')
+@Entity({ name: 'organization_types', schema: 'dbo' })
 export class OrganizationType {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'nvarchar', length: 100 })
-  name: string;
+  name!: string;
 
   @Column({ type: 'bit', default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
-  @CreateDateColumn({ type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'datetime2', precision: 7, default: () => 'SYSUTCDATETIME()' })
+  createdAt!: Date;
 
-  @UpdateDateColumn({ type: 'datetime2', default: () => 'SYSUTCDATETIME()' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'datetime2', precision: 7, default: () => 'SYSUTCDATETIME()' })
+  updatedAt!: Date;
 }

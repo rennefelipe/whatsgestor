@@ -1,21 +1,24 @@
 "use client";
 
+import { FullTextInput } from "../full-text-input";
+
+import { FullTextSelect } from "../full-text-select";
+
 import { useEffect, useState, type FormEvent } from "react";
-import {
-  createContact,
-  updateContact,
-} from "@/services/api/contacts";
+import { createContact, updateContact } from "@/services/api/contacts";
 import type {
   Contact,
   ContactPayload,
   ContactType,
   Organization,
+  OrganizationContext,
 } from "@/types/api";
 import { Icon } from "../icons";
 
 interface ContactFormModalProps {
   contact: Contact | null;
   organizations: Organization[];
+  organizationContexts: OrganizationContext[];
   contactTypes: ContactType[];
   isLoadingOptions: boolean;
   optionsError: string;
@@ -33,6 +36,7 @@ function getErrorMessage(error: unknown): string {
 export function ContactFormModal({
   contact,
   organizations,
+  organizationContexts,
   contactTypes,
   isLoadingOptions,
   optionsError,
@@ -52,6 +56,12 @@ export function ContactFormModal({
   const [email, setEmail] = useState(contact?.email ?? "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const selectedOrganization = organizations.find(
+    (organization) => organization.id === organizationId,
+  );
+  const context = organizationContexts.find(
+    (item) => item.organizationId === organizationId,
+  );
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -75,7 +85,30 @@ export function ContactFormModal({
     };
     try {
       if (contact) {
-        await updateContact(contact.id, payload);
+        // Preserve unchanged legacy values (including phone formatting and nulls).
+        const original = {
+          organizationId: contact.organizationId ?? "",
+          contactTypeId: contact.contactTypeId,
+          storeName: contact.storeName ?? "",
+          contactName: contact.contactName,
+          phone: contact.phone,
+          email: contact.email ?? "",
+        };
+        const current = {
+          organizationId,
+          contactTypeId,
+          storeName,
+          contactName,
+          phone,
+          email,
+        };
+        const changes: Partial<ContactPayload> = {};
+        for (const key of Object.keys(current) as (keyof ContactPayload)[]) {
+          if (current[key] !== original[key])
+            Object.assign(changes, { [key]: payload[key] });
+        }
+        if (Object.keys(changes).length)
+          await updateContact(contact.id, changes);
       } else {
         await createContact(payload);
       }
@@ -141,12 +174,85 @@ export function ContactFormModal({
                 </button>
               </div>
             )}
+            <fieldset className="form-section"><legend>Dados do contato</legend>
+            <div className="form-field">
+              <label htmlFor="contactName">Nome do responsável *</label>
+              <FullTextInput
+                autoFocus
+                id="contactName"
+                maxLength={150}
+                onChange={(event) => setContactName(event.target.value)}
+                placeholder="Nome completo"
+                required
+                value={contactName}
+              />
+            </div>
+
             <div className="form-grid">
               <div className="form-field">
-                <label htmlFor="organizationId">
-                  Organização <span>· opcional</span>
+                <label htmlFor="phone">Número de WhatsApp *</label>
+                <FullTextInput
+                  id="phone"
+                  maxLength={30}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="(00) 00000-0000"
+                  required
+                  value={phone}
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="email">
+                  E-mail <span>· opcional</span>
                 </label>
-                <select
+                <FullTextInput
+                  autoComplete="email"
+                  id="email"
+                  maxLength={200}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="nome@empresa.com"
+                  type="email"
+                  value={email}
+                />
+              </div>
+            </div>
+              <div className="form-field">
+                <label htmlFor="contactTypeId">Função / Cargo *</label>
+                <FullTextSelect
+                  disabled={isLoadingOptions || Boolean(optionsError)}
+                  id="contactTypeId"
+                  onChange={(event) => setContactTypeId(event.target.value)}
+                  required
+                  value={contactTypeId}
+                >
+                  <option value="">
+                    {isLoadingOptions
+                      ? "Carregando tipos..."
+                      : optionsError
+                        ? "Opções indisponíveis"
+                        : "Selecione uma função / cargo"}
+                  </option>
+                  {!isLoadingOptions &&
+                    !optionsError &&
+                    contactTypes.length === 0 && (
+                      <option disabled value="">
+                        Nenhum tipo ativo cadastrado
+                      </option>
+                    )}
+                  {contactTypes.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                      {!type.isActive ? " (inativa — vínculo atual)" : ""}
+                    </option>
+                  ))}
+                </FullTextSelect>
+              </div>
+            </fieldset>
+            <fieldset className="form-section"><legend>Organização</legend>
+              <div className="form-field">
+                <label htmlFor="organizationId">
+                  Organização vinculada <span>· opcional</span>
+                </label>
+                <FullTextSelect
                   disabled={isLoadingOptions || Boolean(optionsError)}
                   id="organizationId"
                   onChange={(event) => setOrganizationId(event.target.value)}
@@ -166,51 +272,46 @@ export function ContactFormModal({
                         Nenhuma organização ativa cadastrada
                       </option>
                     )}
-                  {organizations.map((organization) => (
-                    <option key={organization.id} value={organization.id}>
-                      {organization.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-field">
-                <label htmlFor="contactTypeId">Tipo de contato *</label>
-                <select
-                  disabled={isLoadingOptions || Boolean(optionsError)}
-                  id="contactTypeId"
-                  onChange={(event) => setContactTypeId(event.target.value)}
-                  required
-                  value={contactTypeId}
-                >
-                  <option value="">
-                    {isLoadingOptions
-                      ? "Carregando tipos..."
-                      : optionsError
-                        ? "Opções indisponíveis"
-                        : "Selecione um tipo"}
-                  </option>
-                  {!isLoadingOptions &&
-                    !optionsError &&
-                    contactTypes.length === 0 && (
-                      <option disabled value="">
-                        Nenhum tipo ativo cadastrado
+                  {organizations.map((organization) => {
+                    const group = organizationContexts.find(
+                      (item) => item.organizationId === organization.id,
+                    )?.group;
+                    return (
+                      <option key={organization.id} value={organization.id}>
+                        {organization.name}
+                        {organization.organizationType?.name
+                          ? ` · ${organization.organizationType.name}`
+                          : ""}
+                        {group && group.id !== organization.id
+                          ? ` · ${group.name}`
+                          : ""}
+                        {!organization.isActive
+                          ? " (inativa — vínculo atual)"
+                          : ""}
                       </option>
-                    )}
-                  {contactTypes.map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.name}
-                    </option>
-                  ))}
-                </select>
+                    );
+                  })}
+                </FullTextSelect>
               </div>
-            </div>
 
+            {organizationId && <div className="organization-context-card" role="status">
+              <strong>{context?.organizationType || selectedOrganization?.organizationType?.name || "Organização"}</strong>
+              <span>{[context?.group?.name, context?.shopping?.name, selectedOrganization?.name].filter((name, index, values) => name && values.indexOf(name) === index).join(" › ")}</span>
+            </div>}
+            {context?.hierarchyIssue && (
+              <p className="form-error" role="status">
+                {context.hierarchyIssue}. O vínculo atual será preservado; grupo
+                e shopping não foram atribuídos.
+              </p>
+            )}
+
+            </fieldset>
+            <fieldset className="form-section"><legend>Loja</legend>
             <div className="form-field">
               <label htmlFor="storeName">
-                Loja <span>· opcional</span>
+                Nome da loja <span>· opcional</span>
               </label>
-              <input
+              <FullTextInput
                 id="storeName"
                 maxLength={150}
                 onChange={(event) => setStoreName(event.target.value)}
@@ -219,46 +320,7 @@ export function ContactFormModal({
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="contactName">Nome do responsável *</label>
-              <input
-                autoFocus
-                id="contactName"
-                maxLength={150}
-                onChange={(event) => setContactName(event.target.value)}
-                placeholder="Nome completo"
-                required
-                value={contactName}
-              />
-            </div>
-
-            <div className="form-grid">
-              <div className="form-field">
-                <label htmlFor="phone">Telefone *</label>
-                <input
-                  id="phone"
-                  maxLength={30}
-                  onChange={(event) => setPhone(event.target.value)}
-                  placeholder="(00) 00000-0000"
-                  required
-                  value={phone}
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="email">
-                  E-mail <span>· opcional</span>
-                </label>
-                <input
-                  autoComplete="email"
-                  id="email"
-                  maxLength={200}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="nome@empresa.com"
-                  type="email"
-                  value={email}
-                />
-              </div>
-            </div>
+            </fieldset>
           </div>
 
           <footer className="modal-footer">
@@ -275,7 +337,11 @@ export function ContactFormModal({
               disabled={isSaving || isLoadingOptions || Boolean(optionsError)}
               type="submit"
             >
-              {isSaving ? "Salvando..." : contact ? "Salvar alterações" : "Salvar contato"}
+              {isSaving
+                ? "Salvando..."
+                : contact
+                  ? "Salvar alterações"
+                  : "Salvar contato"}
             </button>
           </footer>
         </form>

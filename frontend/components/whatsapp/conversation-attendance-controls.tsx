@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useAuth } from "../auth/auth-provider";
 import { Icon } from "../icons";
 import { ApiRequestError } from "@/services/api/client";
-import { getUsers } from "@/services/api/users";
+import { apiRequest } from "@/services/api/client";
 import {
   claimWhatsappAttendance,
   finishWhatsappAttendance,
@@ -48,7 +48,7 @@ export function ConversationAttendanceControls({
     action: ConfirmAction;
     conversation: WhatsappConversation;
   } | null>(null);
-  const [users, setUsers] = useState<AuthenticatedUser[]>([]);
+  const [users, setUsers] = useState<Pick<AuthenticatedUser, "id" | "username" | "isActive">[]>([]);
   const [selectedUserId, setSelectedUserId] = useState("");
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersError, setUsersError] = useState("");
@@ -77,9 +77,9 @@ export function ConversationAttendanceControls({
   }, [modalId, modalAction]);
 
   useEffect(() => {
-    if (modalAction !== "assign" || !user?.isActive || !user.isAdmin) return;
+    if (modalAction !== "assign" || !user?.isActive || user.role === "tester") return;
     const controller = new AbortController();
-    void getUsers(controller.signal)
+    void apiRequest<Pick<AuthenticatedUser, "id" | "username" | "isActive">[]>("/whatsapp-conversations/attendance/assignees", { signal: controller.signal })
       .then((items) => {
         if (!controller.signal.aborted)
           setUsers(items.filter((item) => item.isActive));
@@ -96,7 +96,7 @@ export function ConversationAttendanceControls({
         if (!controller.signal.aborted) setUsersLoading(false);
       });
     return () => controller.abort();
-  }, [modalId, modalAction, user?.isActive, user?.isAdmin, retryUsers]);
+  }, [modalId, modalAction, user?.isActive, user?.isAdmin, user?.role, retryUsers]);
 
   function openModal(action: ConfirmAction) {
     if (

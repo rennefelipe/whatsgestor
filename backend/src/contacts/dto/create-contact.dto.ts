@@ -15,7 +15,7 @@ export class CreateContactDto {
   organizationId?: string | null;
 
   @IsUUID('all', { message: 'contactTypeId deve ser um UUID válido.' })
-  contactTypeId: string;
+  contactTypeId!: string;
 
   @IsOptional()
   @IsString({ message: 'storeName deve ser um texto.' })
@@ -27,12 +27,12 @@ export class CreateContactDto {
   @MaxLength(150, {
     message: 'O nome do contato deve ter no máximo 150 caracteres.',
   })
-  contactName: string;
+  contactName!: string;
 
   @IsString({ message: 'O telefone deve ser um texto.' })
   @IsNotEmpty({ message: 'O telefone é obrigatório.' })
   @MaxLength(30, { message: 'O telefone deve ter no máximo 30 caracteres.' })
-  phone: string;
+  phone!: string;
 
   @IsOptional()
   @IsEmail({}, { message: 'O e-mail informado é inválido.' })

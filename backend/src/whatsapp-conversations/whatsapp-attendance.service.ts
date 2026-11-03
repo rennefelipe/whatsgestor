@@ -5,17 +5,22 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  Optional,
 } from '@nestjs/common';
 import { DataSource, EntityManager } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { conversationQuery } from './conversation-query';
 import { WhatsappConversation } from './entities/whatsapp-conversation.entity';
+import { DomainEvents } from '../events/domain-events';
+import { randomUUID } from 'node:crypto';
+import { UsersProfileStore } from '../users/users-profile.store';
 
 type AttendanceAction = 'claim' | 'finish' | 'reopen' | 'assign';
 
 @Injectable()
 export class WhatsappAttendanceService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource,@Optional()private readonly events?:DomainEvents,
+    @Optional() private readonly profiles?: UsersProfileStore) {}
 
   claim(id: string, actorId: string): Promise<WhatsappConversation> {
     return this.transition(id, actorId, 'claim');
@@ -42,11 +47,16 @@ export class WhatsappAttendanceService {
     id: string,
   ): Promise<User | null> {
     // HOLDLOCK in SQL Server keeps the user active and their role stable until commit.
-    return manager.getRepository(User).findOne({
+    const user = await manager.getRepository(User).findOne({
       where: { id, isActive: true },
       select: { id: true, isAdmin: true, isActive: true },
       lock: { mode: 'pessimistic_read' },
     });
+    if (user && this.profiles) {
+      const profile = (await this.profiles.read([id], manager)).get(id.toLowerCase());
+      if (profile?.role === 'tester') return null;
+    }
+    return user;
   }
 
   private async transition(
@@ -55,15 +65,12 @@ export class WhatsappAttendanceService {
     action: AttendanceAction,
     assignedUserId?: string,
   ): Promise<WhatsappConversation> {
-    return this.dataSource.transaction(async (manager) => {
+    const updated=await this.dataSource.transaction(async (manager) => {
       const actor = await this.activeUser(manager, actorId);
       if (!actor)
         throw new UnauthorizedException(
           'Usuário autenticado inexistente ou inativo.',
         );
-      if (action === 'assign' && !actor.isAdmin) {
-        throw new ForbiddenException('Acesso restrito a administradores.');
-      }
       if (
         action === 'assign' &&
         (!assignedUserId || !(await this.activeUser(manager, assignedUserId)))
@@ -82,6 +89,13 @@ export class WhatsappAttendanceService {
       });
       if (!conversation)
         throw new NotFoundException('Conversa WhatsApp não encontrada.');
+
+      if (action === 'assign' && !actor.isAdmin && conversation.assignedUserId !== actor.id) {
+        throw new ForbiddenException('Somente o responsável ou um administrador pode transferir este atendimento.');
+      }
+      if (action === 'assign' && conversation.assignedUserId === assignedUserId) {
+        throw new ConflictException('O usuário selecionado já é responsável por este atendimento.');
+      }
 
       if (action === 'claim') {
         if (
@@ -140,5 +154,9 @@ export class WhatsappAttendanceService {
         throw new NotFoundException('Conversa WhatsApp não encontrada.');
       return updated;
     });
+    this.events?.emit({type:'attendance.changed',connectionId:updated.connectionId,conversationId:updated.id,
+      automaticEvent: action === 'claim' ? 'started' : action === 'assign' ? 'transferred' : action === 'finish' ? 'finished' : undefined,
+      transitionKey: randomUUID()});
+    return updated;
   }
 }

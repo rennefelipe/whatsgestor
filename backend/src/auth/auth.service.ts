@@ -35,6 +35,7 @@ export class AuthService {
     const accessToken = await this.jwt.signAsync({
       sub: user.id,
       username: user.username,
+      userRevision: user.updatedAt.toISOString(),
     });
     return { accessToken, user: this.users.toResponse(user) };
   }

@@ -19,7 +19,7 @@ export function canManageAttendance(
   user: AuthenticatedUser | null,
   conversation: WhatsappConversation,
 ) {
-  const active = !!user?.isActive;
+  const active = !!user?.isActive && user.role !== "tester";
   const inProgress = conversation.attendanceStatus === "in_progress";
   return {
     claim:
@@ -30,7 +30,7 @@ export function canManageAttendance(
       active &&
       inProgress &&
       (user!.isAdmin || user!.id === conversation.assignedUserId),
-    assign: active && inProgress && !!user?.isAdmin,
+    assign: active && inProgress && (!!user?.isAdmin || user?.id === conversation.assignedUserId),
     reopen: active && conversation.attendanceStatus === "finished",
   };
 }

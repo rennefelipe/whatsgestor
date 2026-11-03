@@ -12,7 +12,7 @@ import {
 import { Contact } from '../../contacts/entities/contact.entity';
 import { User } from '../../users/entities/user.entity';
 
-@Entity('whatsapp_conversations')
+@Entity({ name: 'whatsapp_conversations', schema: 'dbo' })
 @Index(
   'UQ_whatsapp_conversations_connection_remoteJid',
   ['connectionId', 'remoteJid'],
@@ -27,23 +27,23 @@ import { User } from '../../users/entities/user.entity';
 )
 export class WhatsappConversation {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'uniqueidentifier' })
-  connectionId: string;
+  connectionId!: string;
 
   @Column({ type: 'nvarchar', length: 255 })
-  remoteJid: string;
+  remoteJid!: string;
 
   @Column({ type: 'nvarchar', length: 255, nullable: true })
-  contactName: string | null;
+  contactName!: string | null;
 
   @Column({ type: 'uniqueidentifier', nullable: true })
-  contactId: string | null;
+  contactId!: string | null;
 
   @ManyToOne(() => Contact, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'contactId', referencedColumnName: 'id' })
-  contact: Contact | null;
+  contact!: Contact | null;
 
   @Column({ type: 'nvarchar', length: 20, default: 'waiting' })
   attendanceStatus: 'waiting' | 'in_progress' | 'finished' = 'waiting';
@@ -53,26 +53,26 @@ export class WhatsappConversation {
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'NO ACTION' })
   @JoinColumn({ name: 'assignedUserId', referencedColumnName: 'id' })
-  assignedUser: Pick<User, 'id' | 'username'> | null;
+  assignedUser!: Pick<User, 'id' | 'username'> | null;
 
-  @Column({ type: 'datetime2', nullable: true })
+  @Column({ type: 'datetime2', precision: 7, nullable: true })
   attendanceStartedAt: Date | null = null;
 
-  @Column({ type: 'datetime2', nullable: true })
+  @Column({ type: 'datetime2', precision: 7, nullable: true })
   attendanceFinishedAt: Date | null = null;
 
-  @Column({ type: 'datetime2', nullable: true })
-  lastMessageAt: Date | null;
+  @Column({ type: 'datetime2', precision: 7, nullable: true })
+  lastMessageAt!: Date | null;
 
   @CreateDateColumn({
-    type: 'datetime2',
+    type: 'datetime2', precision: 7,
     default: () => 'SYSUTCDATETIME()',
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({
-    type: 'datetime2',
+    type: 'datetime2', precision: 7,
     default: () => 'SYSUTCDATETIME()',
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 }

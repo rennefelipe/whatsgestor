@@ -1,56 +1,15 @@
-import { WhatsappMessageMedia } from '../whatsapp-conversations/entities/whatsapp-message-media.entity';
-import { WhatsappMessage } from '../whatsapp-conversations/entities/whatsapp-message.entity';
-import { WhatsappConversation } from '../whatsapp-conversations/entities/whatsapp-conversation.entity';
-import 'dotenv/config';
-import { join } from 'node:path';
-import { DataSource } from 'typeorm';
-import { Organization } from '../organizations/entities/organization.entity';
-import { OrganizationType } from '../organization-types/entities/organization-type.entity';
-import { Contact } from '../contacts/entities/contact.entity';
-import { ContactType } from '../contact-types/entities/contact-type.entity';
-import { User } from '../users/entities/user.entity';
-import { ContactDisplaySetting } from '../contact-display-settings/entities/contact-display-setting.entity';
-import { WhatsappConnection } from '../whatsapp-connections/entities/whatsapp-connection.entity';
-import { migrationFiles } from './migration-files';
+import { DataSource,type DataSourceOptions } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { createDatabaseOptions } from '../config/database';
+import { InitialSchema1793016000000 } from './migrations/1793016000000-InitialSchema';
+import { UserProfiles1793275200000 } from './migrations/1793275200000-UserProfiles';
+import { RecipientSelections1793390400000 } from './migrations/1793390400000-RecipientSelections';
 
-function requiredEnvironmentVariable(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value;
+/** No .env loading, no initialization, no migrations at application startup. */
+export function migrationDataSource(values:Record<string,string>):DataSource {
+  for(const name of ['DB_HOST','DB_PORT','DB_USERNAME','DB_PASSWORD','DB_DATABASE'])if(!values[name])throw new Error('MIGRATION_CONFIG_MISSING');
+  if(!/^\d+$/.test(values.DB_PORT)||Number(values.DB_PORT)<1||Number(values.DB_PORT)>65535)throw new Error('MIGRATION_PORT_INVALID');
+  for(const name of ['DB_ENCRYPT','DB_TRUST_SERVER_CERTIFICATE'])if(!['true','false'].includes(values[name]))throw new Error('MIGRATION_TLS_CONFIG_REQUIRED');
+  const config=new ConfigService({...values,DB_ENCRYPT:values.DB_ENCRYPT==='true',DB_TRUST_SERVER_CERTIFICATE:values.DB_TRUST_SERVER_CERTIFICATE==='true'});
+  return new DataSource({...createDatabaseOptions(config),schema:'dbo',migrations:[InitialSchema1793016000000,UserProfiles1793275200000,RecipientSelections1793390400000],migrationsTableName:'whatsgestor_migrations',migrationsTransactionMode:'all',synchronize:false,migrationsRun:false,dropSchema:false} as DataSourceOptions);
 }
-
-const port = Number(requiredEnvironmentVariable('DB_PORT'));
-if (!Number.isInteger(port) || port < 1 || port > 65535) {
-  throw new Error('DB_PORT must be a valid TCP port number');
-}
-
-export default new DataSource({
-  type: 'mssql',
-  host: requiredEnvironmentVariable('DB_HOST'),
-  port,
-  username: requiredEnvironmentVariable('DB_USERNAME'),
-  password: requiredEnvironmentVariable('DB_PASSWORD'),
-  database: requiredEnvironmentVariable('DB_DATABASE'),
-  synchronize: false,
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-    // Attendance uses SYSUTCDATETIME; message parameters must use UTC too.
-    useUTC: true,
-  },
-  entities: [
-    OrganizationType,
-    Organization,
-    ContactType,
-    Contact,
-    User,
-    ContactDisplaySetting,
-    WhatsappConnection,
-    WhatsappConversation,
-    WhatsappMessage,
-    WhatsappMessageMedia,
-  ],
-  migrations: [migrationFiles(join(__dirname, 'migrations'))],
-});

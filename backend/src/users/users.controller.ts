@@ -25,6 +25,11 @@ export class UsersController {
     return this.users.findAll();
   }
 
+  @Get('schema')
+  schemaStatus() {
+    return this.users.schemaStatus();
+  }
+
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.users.findOne(id);

@@ -9,11 +9,11 @@ class LoginDto {
   @IsString({ message: 'O username deve ser um texto.' })
   @IsNotEmpty({ message: 'O username é obrigatório.' })
   @MaxLength(100, { message: 'O username deve ter no máximo 100 caracteres.' })
-  username: string;
+  username!: string;
 
   @IsString({ message: 'A senha deve ser um texto.' })
   @IsNotEmpty({ message: 'A senha é obrigatória.' })
-  password: string;
+  password!: string;
 }
 
 @Controller('auth')

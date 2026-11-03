@@ -1,0 +1,26 @@
+.receive-monitor-screen { min-width: 0; }
+.receive-monitor-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-block: 16px; color: var(--text-muted); font-size: 12px; }
+.receive-monitor-toolbar label { display: flex; align-items: center; gap: 8px; }
+.receive-monitor-toolbar select { max-width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); background: var(--surface); }
+.receive-monitor-notice, .receive-monitor-warning, .receive-monitor-panel { padding: 18px; margin-block: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text-primary); font-size: 13px; line-height: 1.6; }
+.receive-monitor-notice { border-color: var(--brand); background: var(--brand-soft); }
+.receive-monitor-warning { border-color: var(--waiting-border); background: var(--waiting-bg); color: var(--waiting-text); }
+.receive-monitor-notice p, .receive-monitor-warning p { margin-bottom: 0; }
+.receive-monitor-panel h2 { font-size: 15px; margin: 0 0 12px; }
+.receive-monitor-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.receive-monitor-metrics > div { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow-wrap: anywhere; }
+.receive-monitor-metrics dt { color: var(--text-muted); font-size: 12px; }
+.receive-monitor-metrics dd { margin: 9px 0 0; font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.receive-monitor-help, .receive-monitor-metrics small { color: var(--text-muted); font-size: 12px; line-height: 1.7; }
+.receive-monitor-tableScroll { overflow: auto; max-height: 680px; }
+.receive-monitor-table { width: 100%; min-width: 880px; border-collapse: collapse; font-size: 12px; }
+.receive-monitor-table th { position: sticky; top: 0; z-index: 1; text-align: left; padding: 12px; color: var(--text-muted); background: var(--surface-muted); }
+.receive-monitor-table td { vertical-align: top; padding: 14px 12px; border-top: 1px solid var(--border); min-width: 145px; }
+.receive-monitor-table small { display: block; color: var(--text-muted); margin-top: 6px; }
+.receive-monitor-timeline { margin: 0; padding: 0; list-style: none; min-width: 210px; }
+.receive-monitor-timeline li { padding: 5px 8px; margin-bottom: 4px; border-left: 3px solid var(--border); }
+.receive-monitor-timeline .receive-monitor-confirmed { border-left-color: var(--brand); background: var(--brand-soft); }
+.receive-monitor-unobserved { color: var(--text-muted); }
+.receive-monitor-timeline small { margin: 0; }
+@media (max-width: 1050px) { .receive-monitor-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .receive-monitor-metrics { grid-template-columns: minmax(0, 1fr); } .receive-monitor-panel { padding: 12px; } .receive-monitor-toolbar label { max-width: 100%; } }

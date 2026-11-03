@@ -55,10 +55,11 @@ export function getWhatsappConversationMessages(
 export function sendWhatsappText(
   conversationId: string,
   payload: SendWhatsappTextPayload,
+  attemptId: string,
 ): Promise<WhatsappMessage> {
   return apiRequest<WhatsappMessage>(
     `/whatsapp-conversations/${encodeURIComponent(conversationId)}/messages`,
-    { method: "POST", body: JSON.stringify(payload) },
+    { method: "POST", headers:{"Idempotency-Key":attemptId}, body: JSON.stringify(payload) },
   );
 }
 

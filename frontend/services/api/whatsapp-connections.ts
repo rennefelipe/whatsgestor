@@ -50,16 +50,22 @@ export function connectWhatsappConnection(
 ): Promise<WhatsappConnectionStatusResponse> {
   return apiRequest<WhatsappConnectionStatusResponse>(
     `/whatsapp-connections/${encodeURIComponent(id)}/connect`,
-    { method: "POST" },
+    { method: "POST", body: JSON.stringify({ allowPairing: true }) },
   );
 }
 
 export function getWhatsappConnectionQr(
   id: string,
 ): Promise<WhatsappConnectionQrResponse> {
-  return apiRequest<WhatsappConnectionQrResponse>(
+  return apiRequest<{
+    qrCodeDataUrl: string | null;
+    expiresAt: string | null;
+  }>(
     `/whatsapp-connections/${encodeURIComponent(id)}/qr`,
-  );
+  ).then((response) => ({
+    qrCode: response.qrCodeDataUrl ?? "",
+    expiresAt: response.expiresAt ?? "",
+  }));
 }
 
 export function getWhatsappConnectionStatus(
@@ -84,6 +90,20 @@ export function logoutWhatsappConnection(
 ): Promise<WhatsappConnectionStatusResponse> {
   return apiRequest<WhatsappConnectionStatusResponse>(
     `/whatsapp-connections/${encodeURIComponent(id)}/logout`,
+    { method: "POST" },
+  );
+}
+
+export function recoverWhatsappPairing(id: string): Promise<WhatsappConnectionStatusResponse> {
+  return apiRequest<WhatsappConnectionStatusResponse>(
+    `/whatsapp-connections/${encodeURIComponent(id)}/pairing-recovery`,
+    { method: "POST", body: JSON.stringify({ confirmation: id, acknowledgeCredentialReplacement: true }) },
+  );
+}
+
+export function retryWhatsappStorage(id: string): Promise<WhatsappConnectionStatusResponse> {
+  return apiRequest<WhatsappConnectionStatusResponse>(
+    `/whatsapp-connections/${encodeURIComponent(id)}/storage-retry`,
     { method: "POST" },
   );
 }

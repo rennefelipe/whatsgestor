@@ -66,8 +66,10 @@ export function conversationPreview(
   conversation: WhatsappConversation,
   messages: WhatsappMessage[],
 ): string {
-  const latest = messages.at(-1);
-  if (!latest?.textContent) return "";
+  const stored=conversation.lastMessage,loaded=messages.at(-1);
+  const at=(message:NonNullable<typeof stored>)=>new Date(message.messageTimestamp??message.createdAt).getTime();
+  const latest=!stored?loaded:!loaded?stored:at(loaded)>=at(stored)?loaded:stored;
+  if (!latest) return "";
   const timestamp = new Date(
     latest.messageTimestamp ?? latest.createdAt,
   ).getTime();
@@ -76,5 +78,6 @@ export function conversationPreview(
     timestamp < new Date(conversation.lastMessageAt).getTime()
   )
     return "";
-  return latest.textContent;
+  const labels:Record<string,string>={image:"Imagem",audio:"Áudio",video:"Vídeo",document:"Documento"};
+  return latest.textContent?.trim() || labels[latest.messageType] || "";
 }

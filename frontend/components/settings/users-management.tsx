@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import {
   createUser,
   getUsers,
+  getUsersSchema,
   updateUser,
   updateUserActive,
   updateUserDeletePermission,
@@ -12,6 +13,7 @@ import type {
   AuthenticatedUser,
   CreateUserPayload,
   UpdateUserPayload,
+  UserRole,
 } from "@/types/api";
 import { useAuth } from "../auth/auth-provider";
 import { Icon } from "../icons";
@@ -23,7 +25,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 export function UsersManagement() {
-  const { user: currentUser, logout, refreshUser } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const [users, setUsers] = useState<AuthenticatedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -32,13 +34,27 @@ export function UsersManagement() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<AuthenticatedUser | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [resetOnly, setResetOnly] = useState(false);
+  const [search, setSearch] = useState("");
+  const [profile, setProfile] = useState("");
+  const [profileFieldsAvailable, setProfileFieldsAvailable] = useState(false);
+  const [status, setStatus] = useState("");
+  const [permissionsUser, setPermissionsUser] = useState<AuthenticatedUser | null>(null);
+  const visibleUsers = users.filter((entry) =>
+    `${entry.fullName ?? ""} ${entry.username}`.toLocaleLowerCase("pt-BR").includes(search.trim().toLocaleLowerCase("pt-BR")) &&
+    (!profile || (entry.role ?? (entry.isAdmin ? "administrator" : "attendant")) === profile) &&
+    (!status || entry.isActive === (status === "active")));
+  const activeAdmins = users.filter((entry) => entry.isAdmin && entry.isActive).length;
 
   const loadUsers = useCallback(async (signal?: AbortSignal) => {
     setIsLoading(true);
     setLoadError("");
     try {
-      const result = await getUsers(signal);
+      const [result, schema] = await Promise.all([getUsers(signal), getUsersSchema(signal)]);
+      if (signal?.aborted) return;
       setUsers(result);
+      setProfileFieldsAvailable(schema.profileFieldsAvailable === true);
+      setPermissionsUser((previous) => previous ? result.find((entry) => entry.id === previous.id) ?? null : null);
     } catch (error) {
       if (!signal?.aborted) setLoadError(getErrorMessage(error));
     } finally {
@@ -49,10 +65,10 @@ export function UsersManagement() {
   useEffect(() => {
     const controller = new AbortController();
     void Promise.resolve().then(() => {
-      if (!controller.signal.aborted) void loadUsers(controller.signal);
+      if (!controller.signal.aborted && currentUser?.isAdmin) void loadUsers(controller.signal);
     });
     return () => controller.abort();
-  }, [loadUsers]);
+  }, [loadUsers, currentUser?.isAdmin]);
 
   useEffect(() => {
     if (!toastMessage) return;
@@ -60,7 +76,8 @@ export function UsersManagement() {
     return () => window.clearTimeout(timer);
   }, [toastMessage]);
 
-  function openForm(user: AuthenticatedUser | null) {
+  function openForm(user: AuthenticatedUser | null, passwordOnly = false) {
+    setResetOnly(passwordOnly);
     setEditingUser(user);
     setActionError("");
     setIsFormOpen(true);
@@ -73,8 +90,8 @@ export function UsersManagement() {
     if (editingUser) {
       await updateUser(editingUser.id, payload as UpdateUserPayload);
       if (editingUser.id === currentUser?.id) {
-        const updatedUser = await refreshUser();
-        if (!updatedUser.isActive) logout();
+        logout();
+        return;
       }
     } else {
       await createUser(payload as CreateUserPayload);
@@ -90,6 +107,7 @@ export function UsersManagement() {
   }
 
   async function toggleActive(user: AuthenticatedUser) {
+    if (!window.confirm(`${user.isActive ? "Desativar" : "Ativar"} o usuário ${user.username}? ${user.isActive ? "O acesso será bloqueado imediatamente." : "O usuário poderá entrar novamente."}`)) return;
     setBusyId(user.id);
     setActionError("");
     try {
@@ -112,10 +130,12 @@ export function UsersManagement() {
   }
 
   async function toggleDeletePermission(user: AuthenticatedUser) {
+    if (!window.confirm(`${user.canDelete ? "Retirar" : "Conceder"} permissão de exclusão para ${user.username}?`)) return;
     setBusyId(user.id);
     setActionError("");
     try {
       await updateUserDeletePermission(user.id, !user.canDelete);
+      if (user.id === currentUser?.id) { logout(); return; }
       await loadUsers();
       setToastMessage(
         user.canDelete
@@ -129,12 +149,14 @@ export function UsersManagement() {
     }
   }
 
+  if (!currentUser?.isAdmin) return <div className="inline-error" role="alert">Acesso restrito a administradores.</div>;
+
   return (
     <>
       <div className="users-management">
         <div className="users-management-heading">
           <div>
-            <h2>Usuários</h2>
+            <h1>Usuários</h1>
             <p>Gerencie o acesso e as permissões dos usuários do sistema.</p>
           </div>
           <button
@@ -147,7 +169,24 @@ export function UsersManagement() {
           </button>
         </div>
 
-        {loadError && (
+        <div className="users-stats" aria-label="Indicadores de usuários">
+          <article className="users-stat users-stat-active"><span>Ativos</span><strong>{isLoading || loadError ? "—" : users.filter((entry) => entry.isActive).length}</strong></article>
+          <article className="users-stat users-stat-inactive"><span>Inativos</span><strong>{isLoading || loadError ? "—" : users.filter((entry) => !entry.isActive).length}</strong></article>
+          <article className="users-stat users-stat-admin"><span>Administradores</span><strong>{isLoading || loadError ? "—" : users.filter((entry) => entry.isAdmin).length}</strong><small>{isLoading || loadError ? "" : `${activeAdmins} com acesso ativo`}</small></article>
+        </div>
+        {!isLoading && !loadError && !profileFieldsAvailable && <p>Nome completo, e-mail e perfil Testador aguardam liberação administrativa.</p>}
+        <div className="users-filters">
+          <label className="form-field">Buscar por nome ou login<input type="search" placeholder="Digite o nome ou login…" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+          <label className="form-field">Perfil<select value={profile} onChange={(event) => setProfile(event.target.value)}><option value="">Todos os perfis</option><option value="administrator">Administrador</option><option value="attendant">Atendente</option>{profileFieldsAvailable && <option value="tester">Testador</option>}</select></label>
+          <label className="form-field">Situação<select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Todas as situações</option><option value="active">Ativo</option><option value="inactive">Inativo</option></select></label>
+        </div>
+        {permissionsUser && <section className="users-permissions" aria-label={`Permissões de ${permissionsUser.username}`}>
+          <strong>Permissões de {permissionsUser.username}</strong>
+          <p>{permissionsUser.role === "tester" ? "Testador: somente consulta de contatos e cadastros de apoio. Sem envios, campanhas, acesso ao WhatsApp, exclusões, alterações de configurações ou gerenciamento de usuários." : permissionsUser.isAdmin ? "Administrador: gerenciamento de usuários e configurações administrativas, acesso operacional e exclusões." : `Atendente: acesso operacional a conversas, contatos e rotinas disponíveis. Sem gerenciamento de usuários. Exclusões ${permissionsUser.canDelete ? "autorizadas" : "bloqueadas"}.`}</p>
+          <p>{permissionsUser.isActive ? "Acesso ativo." : "Acesso bloqueado: usuário inativo."}</p>
+          <button type="button" className="secondary-button" onClick={() => setPermissionsUser(null)}>Fechar permissões</button>
+        </section>}
+                {loadError && (
           <div className="inline-error" role="alert">
             Não foi possível carregar os usuários. {loadError}
             <button
@@ -171,10 +210,10 @@ export function UsersManagement() {
           </div>
         ) : loadError ? null : (
           <div className="table-panel settings-table-panel">
-            {users.length === 0 ? (
+            {visibleUsers.length === 0 ? (
               <div className="empty-state">
-                <strong>Nenhum usuário cadastrado</strong>
-                <p>Cadastre usuários autorizados a acessar o sistema.</p>
+                <strong>Nenhum usuário encontrado</strong>
+                <p>Revise os filtros ou cadastre um usuário autorizado.</p>
               </div>
             ) : (
               <div className="contact-table-scroll">
@@ -189,11 +228,11 @@ export function UsersManagement() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map((user) => (
+                    {visibleUsers.map((user) => (
                       <tr key={user.id}>
-                        <td className="settings-name">{user.username}</td>
-                        <td>{user.isAdmin ? "Administrador" : "Usuário"}</td>
-                        <td>{user.canDelete ? "Permitida" : "Não permitida"}</td>
+                        <td className="settings-name"><strong>{user.fullName || user.username}</strong>{user.fullName && <div>{user.username}</div>}{user.email && <small>{user.email}</small>}</td>
+                        <td>{user.role === "tester" ? "Testador" : user.isAdmin ? "Administrador" : "Atendente"}</td>
+                        <td>{user.isAdmin ? "Incluída no perfil" : user.canDelete ? "Permitida" : "Não permitida"}</td>
                         <td>
                           <span
                             className={`status-pill${user.isActive ? " active" : " inactive"}`}
@@ -203,6 +242,8 @@ export function UsersManagement() {
                         </td>
                         <td>
                           <div className="row-actions">
+                            <button type="button" className="secondary-button" aria-label={`Permissões de ${user.username}`} onClick={() => setPermissionsUser(user)}>Permissões</button>
+                            <button type="button" className="secondary-button" aria-label={`Redefinir senha de ${user.username}`} disabled={busyId !== null} onClick={() => openForm(user, true)}>Redefinir senha</button>
                             <button
                               aria-label={`Editar usuário ${user.username}`}
                               className="icon-button"
@@ -215,7 +256,7 @@ export function UsersManagement() {
                             <button
                               aria-label={`${user.canDelete ? "Retirar" : "Conceder"} permissão de exclusão para ${user.username}`}
                               className="icon-button"
-                              disabled={busyId === user.id}
+                              disabled={busyId !== null || user.isAdmin || user.role === "tester"}
                               onClick={() =>
                                 void toggleDeletePermission(user)
                               }
@@ -234,7 +275,7 @@ export function UsersManagement() {
                             <button
                               aria-label={`${user.isActive ? "Desativar" : "Ativar"} usuário ${user.username}`}
                               className="icon-button"
-                              disabled={busyId === user.id}
+                              disabled={busyId !== null || (user.isAdmin && user.isActive && activeAdmins <= 1)}
                               onClick={() => void toggleActive(user)}
                               title={user.isActive ? "Desativar" : "Ativar"}
                               type="button"
@@ -259,6 +300,8 @@ export function UsersManagement() {
       {isFormOpen && (
         <UserFormModal
           user={editingUser}
+          resetOnly={resetOnly}
+          profileFieldsAvailable={profileFieldsAvailable}
           onClose={() => setIsFormOpen(false)}
           onSave={saveUser}
         />
@@ -275,22 +318,46 @@ export function UsersManagement() {
 
 function UserFormModal({
   user,
+  resetOnly,
+  profileFieldsAvailable,
   onClose,
   onSave,
 }: {
   user: AuthenticatedUser | null;
+  resetOnly: boolean;
+  profileFieldsAvailable: boolean;
   onClose: () => void;
   onSave: (
     payload: CreateUserPayload | UpdateUserPayload,
   ) => Promise<void>;
 }) {
   const [username, setUsername] = useState(user?.username ?? "");
+  const [fullName, setFullName] = useState(user?.fullName ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(user?.isAdmin ?? false);
+  const [confirmation, setConfirmation] = useState("");
+  const [role, setRole] = useState<UserRole>(user?.role ?? (user?.isAdmin ? "administrator" : "attendant"));
+  const isAdmin = role === "administrator";
   const [canDelete, setCanDelete] = useState(user?.canDelete ?? false);
   const [isActive, setIsActive] = useState(user?.isActive ?? true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const modalRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    const modal = modalRef.current;
+    modal?.querySelector<HTMLElement>(resetOnly ? '#user-password' : '#user-username')?.focus();
+    function trapFocus(event: KeyboardEvent) {
+      if (event.key !== 'Tab' || !modal) return;
+      const controls = [...modal.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled)')];
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
+    document.addEventListener('keydown', trapFocus);
+    return () => { document.removeEventListener('keydown', trapFocus); previous?.focus(); };
+  }, [resetOnly]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -302,20 +369,28 @@ function UserFormModal({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSaving) return;
     setError("");
+    if ((!user || resetOnly) && (password !== confirmation || password.length < 8 || new TextEncoder().encode(password).length > 72)) {
+      setError("As senhas devem coincidir e ter pelo menos 8 caracteres e no máximo 72 bytes em UTF-8.");
+      return;
+    }
+    if (user && !window.confirm(resetOnly ? `Redefinir a senha de ${user.username}? Será necessário entrar novamente.` : `Salvar as alterações de ${user.username}? As sessões deste usuário serão invalidadas.`)) return;
     setIsSaving(true);
     try {
+      const profileData = profileFieldsAvailable ? { fullName: fullName.trim() || undefined, email: email.trim() || null, role } : {};
       if (user) {
         const payload: UpdateUserPayload = {
+          ...profileData,
           username: username.trim(),
           isAdmin,
           canDelete,
           isActive,
         };
-        if (password) payload.password = password;
-        await onSave(payload);
+        await onSave(resetOnly ? { password } : payload);
       } else {
         await onSave({
+          ...profileData,
           username: username.trim(),
           password,
           isAdmin,
@@ -338,6 +413,7 @@ function UserFormModal({
       }}
     >
       <section
+        ref={modalRef}
         aria-labelledby="user-form-title"
         aria-modal="true"
         className="modal"
@@ -346,7 +422,7 @@ function UserFormModal({
         <header className="modal-header">
           <div>
             <h2 id="user-form-title">
-              {user ? "Editar usuário" : "Novo usuário"}
+              {resetOnly ? `Redefinir senha: ${user?.username}` : user ? "Editar usuário" : "Novo usuário"}
             </h2>
             <p>Defina o perfil, o acesso e as permissões.</p>
           </div>
@@ -367,7 +443,11 @@ function UserFormModal({
                 {error}
               </div>
             )}
-            <div className="form-field">
+            {!resetOnly && profileFieldsAvailable && <>
+              <div className="form-field"><label htmlFor="user-full-name">Nome completo{!user && " *"}</label><input id="user-full-name" autoComplete="name" maxLength={200} required={!user} value={fullName} onChange={(event) => setFullName(event.target.value)} /></div>
+              <div className="form-field"><label htmlFor="user-email">E-mail (opcional)</label><input id="user-email" type="email" autoComplete="email" maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} /></div>
+            </>}
+            {!resetOnly && <div className="form-field">
               <label htmlFor="user-username">Usuário *</label>
               <input
                 autoFocus
@@ -378,36 +458,32 @@ function UserFormModal({
                 required
                 value={username}
               />
-            </div>
-            <div className="form-field">
+            </div>}
+            {(!user || resetOnly) && <><div className="form-field">
               <label htmlFor="user-password">
-                Senha {user ? <span>· deixe em branco para manter</span> : "*"}
+                {resetOnly ? "Nova senha *" : "Senha inicial *"}
               </label>
               <input
                 autoComplete="new-password"
                 id="user-password"
-                minLength={password || !user ? 8 : undefined}
+                minLength={8}
                 onChange={(event) => setPassword(event.target.value)}
-                required={!user}
+                required
                 type="password"
                 value={password}
               />
             </div>
-            <label className="user-permission-field">
-              <input
-                checked={isAdmin}
-                onChange={(event) => setIsAdmin(event.target.checked)}
-                type="checkbox"
-              />
-              <span>Administrador</span>
-            </label>
+            <div className="form-field"><label htmlFor="user-password-confirmation">Confirmar senha *</label><input id="user-password-confirmation" autoComplete="new-password" type="password" required value={confirmation} onChange={(event) => setConfirmation(event.target.value)} /></div></>}
+            {!resetOnly && <><div className="form-field"><label htmlFor="user-profile">Perfil</label><select id="user-profile" value={role} onChange={(event) => { const next = event.target.value as UserRole; setRole(next); if (next === "tester") setCanDelete(false); }}><option value="attendant">Atendente</option><option value="administrator">Administrador</option>{profileFieldsAvailable && <option value="tester">Testador</option>}</select></div>
+            {role === "tester" && <p>Somente consultas de contatos. Envio de mensagens, campanhas, WhatsApp, exclusões e alterações estão bloqueados no servidor.</p>}
             <label className="user-permission-field">
               <input
                 checked={canDelete}
+                disabled={role === "tester"}
                 onChange={(event) => setCanDelete(event.target.checked)}
                 type="checkbox"
               />
-              <span>Permitir exclusão de registros</span>
+              <span>{isAdmin ? "Permitir exclusões caso passe a atendente" : "Permitir exclusão de registros"}</span>
             </label>
             <label className="user-permission-field">
               <input
@@ -416,7 +492,7 @@ function UserFormModal({
                 type="checkbox"
               />
               <span>Usuário ativo</span>
-            </label>
+            </label></>}
           </div>
           <footer className="modal-footer">
             <button
@@ -428,7 +504,7 @@ function UserFormModal({
               Cancelar
             </button>
             <button className="primary-button" disabled={isSaving} type="submit">
-              {isSaving ? "Salvando..." : "Salvar usuário"}
+              {isSaving ? "Salvando..." : resetOnly ? "Redefinir senha" : "Salvar usuário"}
             </button>
           </footer>
         </form>

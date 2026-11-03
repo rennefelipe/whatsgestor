@@ -1,11 +1,12 @@
 "use client";
 
+import { FullTextInput } from "../full-text-input";
+
+import { FullTextSelect } from "../full-text-select";
+import { organizationRole } from "../organization-role";
+
 import { useEffect, useState, type FormEvent } from "react";
-import type {
-  ContactType,
-  Organization,
-  OrganizationType,
-} from "@/types/api";
+import type { ContactType, Organization, OrganizationType } from "@/types/api";
 import {
   createContactType,
   createOrganization,
@@ -18,14 +19,9 @@ import type { OrganizationPayload } from "@/services/api/settings";
 import { Icon } from "../icons";
 
 export type SettingsEntityKind =
-  | "organization-types"
-  | "organizations"
-  | "contact-types";
+  "organization-types" | "organizations" | "contact-types";
 export type SettingsEntity =
-  | OrganizationType
-  | Organization
-  | ContactType
-  | null;
+  OrganizationType | Organization | ContactType | null;
 
 interface SettingsEntityModalProps {
   kind: SettingsEntityKind;
@@ -63,12 +59,38 @@ export function SettingsEntityModal({
     isOrganization(kind, entity) ? entity.organizationTypeId : "",
   );
   const [parentOrganizationId, setParentOrganizationId] = useState(
-    isOrganization(kind, entity) ? entity.parentOrganizationId ?? "" : "",
+    isOrganization(kind, entity) ? (entity.parentOrganizationId ?? "") : "",
   );
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const isEditing = entity !== null;
   const isOrganizationForm = kind === "organizations";
+  const selectedRole = organizationRole(
+    organizationTypes.find((type) => type.id === organizationTypeId)?.name,
+  );
+  const parentChoices = organizations.filter((organization) => {
+    if (organization.id === entity?.id || !organization.isActive) return false;
+    const type =
+      organizationTypes.find(
+        (item) => item.id === organization.organizationTypeId,
+      ) ?? organization.organizationType;
+    if (selectedRole === "shopping")
+      return (
+        organizationRole(type?.name) === "group" &&
+        !!type?.isActive &&
+        !organization.parentOrganizationId
+      );
+    const visited = new Set<string>();
+    let current: Organization | undefined = organization;
+    while (current) {
+      if (current.id === entity?.id || visited.has(current.id)) return false;
+      visited.add(current.id);
+      current = organizations.find(
+        (item) => item.id === current?.parentOrganizationId,
+      );
+    }
+    return true;
+  });
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -117,9 +139,7 @@ export function SettingsEntityModal({
     }
   }
 
-  const title = isEditing
-    ? "Editar"
-    : "Novo";
+  const title = isEditing ? "Editar" : "Novo";
   const entityTitle =
     kind === "organization-types"
       ? "tipo de organização"
@@ -165,29 +185,26 @@ export function SettingsEntityModal({
                 {error}
               </div>
             )}
-            <div className="form-field">
-              <label htmlFor="settings-entity-name">Nome *</label>
-              <input
-                autoFocus
-                id="settings-entity-name"
-                maxLength={isOrganizationForm ? 150 : 100}
-                onChange={(event) => setName(event.target.value)}
-                required
-                value={name}
-              />
-            </div>
-
             {isOrganizationForm && (
               <>
                 <div className="form-field">
                   <label htmlFor="settings-organization-type">
-                    Tipo de organização *
+                    O que deseja cadastrar? *
                   </label>
-                  <select
+                  <FullTextSelect
                     id="settings-organization-type"
-                    onChange={(event) =>
-                      setOrganizationTypeId(event.target.value)
-                    }
+                    onChange={(event) => {
+                      setOrganizationTypeId(event.target.value);
+                      setParentOrganizationId("");
+                      if (
+                        organizationRole(
+                          organizationTypes.find(
+                            (type) => type.id === event.target.value,
+                          )?.name,
+                        ) === "group"
+                      )
+                        setParentOrganizationId("");
+                    }}
                     required
                     value={organizationTypeId}
                   >
@@ -207,64 +224,121 @@ export function SettingsEntityModal({
                         <option value={organizationTypeId}>
                           {organizationTypes.find(
                             (type) => type.id === organizationTypeId,
-                          )?.name ?? "Tipo atual"} (inativo)
+                          )?.name ?? "Tipo atual"}{" "}
+                          (inativo)
                         </option>
                       )}
-                  </select>
+                  </FullTextSelect>
                 </div>
                 <div className="form-field">
-                  <label htmlFor="settings-parent-organization">
-                    Organização pai <span>· opcional</span>
-                  </label>
-                  <select
-                    id="settings-parent-organization"
-                    onChange={(event) =>
-                      setParentOrganizationId(event.target.value)
-                    }
-                    value={parentOrganizationId}
-                  >
-                    <option value="">Sem organização pai</option>
-                    {organizations
-                      .filter(
-                        (organization) =>
-                          organization.id !== entity?.id &&
-                          organization.isActive,
-                      )
-                      .map((organization) => (
+              <label htmlFor="settings-entity-name">
+                {isOrganizationForm && selectedRole === "group"
+                  ? "Nome do grupo"
+                  : isOrganizationForm && selectedRole === "shopping"
+                    ? "Nome do shopping"
+                    : "Nome"}{" "}
+                *
+              </label>
+              <FullTextInput
+                autoFocus
+                id="settings-entity-name"
+                maxLength={isOrganizationForm ? 150 : 100}
+                onChange={(event) => setName(event.target.value)}
+                required
+                value={name}
+              />
+            </div>
+                {organizationTypeId && selectedRole !== "group" && (
+                  <div className="form-field">
+                    <label htmlFor="settings-parent-organization">
+                      {selectedRole === "shopping"
+                        ? "Grupo responsável"
+                        : "Organização pai"}
+                      {selectedRole !== "shopping" && <span>· opcional</span>}
+                    </label>
+                    <FullTextSelect
+                      id="settings-parent-organization"
+                      value={parentOrganizationId}
+                      required={selectedRole === "shopping"}
+                      onChange={(event) =>
+                        setParentOrganizationId(event.target.value)
+                      }
+                    >
+                      <option value="">
+                        {selectedRole === "shopping"
+                          ? "Selecione um grupo"
+                          : "Sem organização pai"}
+                      </option>
+                      {parentChoices.map((organization) => (
                         <option key={organization.id} value={organization.id}>
                           {organization.name}
                         </option>
                       ))}
-                    {parentOrganizationId &&
-                      organizations.some(
-                        (organization) =>
-                          organization.id === parentOrganizationId &&
-                          !organization.isActive,
-                      ) && (
-                        <option value={parentOrganizationId}>
-                          {organizations.find(
-                            (organization) =>
-                              organization.id === parentOrganizationId,
-                          )?.name ?? "Organização atual"} (inativa)
-                        </option>
-                      )}
-                  </select>
-                </div>
+                      {parentOrganizationId &&
+                        !parentChoices.some(
+                          (organization) =>
+                            organization.id === parentOrganizationId,
+                        ) && (
+                          <option value={parentOrganizationId} disabled>
+                            Vínculo atual incompatível:{" "}
+                            {organizations.find(
+                              (organization) =>
+                                organization.id === parentOrganizationId,
+                            )?.name ?? "não encontrado"}
+                          </option>
+                        )}
+                    </FullTextSelect>
+                    {selectedRole === "shopping" && (
+                      <p className="form-help">
+                        Somente grupos ativos e com hierarquia válida.
+                      </p>
+                    )}
+                  </div>
+                )}
+                {selectedRole === "group" && parentOrganizationId && (
+                  <div className="form-error">
+                    Este registro possui um vínculo legado. Ele será preservado
+                    até uma correção explícita.
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={() => setParentOrganizationId("")}
+                    >
+                      Remover organização pai deste grupo
+                    </button>
+                  </div>
+                )}
               </>
             )}
 
+            {!isOrganizationForm && (<div className="form-field">
+              <label htmlFor="settings-entity-name">
+                {isOrganizationForm && selectedRole === "group"
+                  ? "Nome do grupo"
+                  : isOrganizationForm && selectedRole === "shopping"
+                    ? "Nome do shopping"
+                    : "Nome"}{" "}
+                *
+              </label>
+              <FullTextInput
+                autoFocus
+                id="settings-entity-name"
+                maxLength={isOrganizationForm ? 150 : 100}
+                onChange={(event) => setName(event.target.value)}
+                required
+                value={name}
+              />
+            </div>)}
             <div className="form-field">
               <label htmlFor="settings-entity-active">Situação</label>
-              <select
+              <FullTextSelect
                 id="settings-entity-active"
-                onChange={(event) =>
-                  setIsActive(event.target.value === "true")
-                }
+                onChange={(event) => setIsActive(event.target.value === "true")}
                 value={String(isActive)}
               >
                 <option value="true">Ativo</option>
                 <option value="false">Inativo</option>
-              </select>
+              </FullTextSelect>
             </div>
           </div>
 
@@ -277,7 +351,11 @@ export function SettingsEntityModal({
             >
               Cancelar
             </button>
-            <button className="primary-button" disabled={isSaving} type="submit">
+            <button
+              className="primary-button"
+              disabled={isSaving}
+              type="submit"
+            >
               {isSaving ? "Salvando..." : "Salvar"}
             </button>
           </footer>

@@ -16,7 +16,8 @@ import {
   getWhatsappConnectionQr,
   getWhatsappConnectionStatus,
   getWhatsappConnections,
-  logoutWhatsappConnection,
+  recoverWhatsappPairing,
+  retryWhatsappStorage,
   updateWhatsappConnection,
   updateWhatsappConnectionActive,
 } from "@/services/api/whatsapp-connections";
@@ -44,6 +45,17 @@ const STATUS_DESCRIPTIONS: Record<WhatsappConnectionStatus, string> = {
   connected: "A sessão está conectada ao WhatsApp.",
   reconnecting: "Tentando restabelecer a conexão.",
   error: "Não foi possível manter a conexão.",
+};
+
+const AUTH_MESSAGES: Record<string, string> = {
+  logged_out: "O WhatsApp encerrou a autorização desta sessão. É necessária uma nova autorização.",
+  credentials_rejected: "O WhatsApp rejeitou as credenciais de login. É necessária uma nova autorização.",
+  pairing_incomplete: "O pareamento não foi concluído. Autorize um novo pareamento para obter outro QR Code.",
+  storage_failure: "Falha ao salvar a autenticação. As credenciais foram preservadas; verifique o armazenamento antes de tentar novamente.",
+  critical_failure: "A sessão foi interrompida por segurança. Verifique o diagnóstico antes de tentar novamente.",
+  pairing_recovery_in_progress: "A preparação do novo pareamento foi interrompida. O estado anterior está preservado e precisa de revisão.",
+  session_error: "A sessão exige revisão e uma nova autorização do WhatsApp.",
+  reconnect_budget_exhausted: "O limite de reconexões foi atingido. Revise a sessão antes de autorizar um novo pareamento.",
 };
 
 interface QrState {
@@ -177,9 +189,10 @@ export function WhatsappConnectionsScreen({
         const status = await getWhatsappConnectionStatus(connectionId);
         if (stopped) return;
         setQrStatus(status.status);
+        setQrError(status.authenticationIssue ? AUTH_MESSAGES[status.authenticationIssue] ?? "A sessão exige revisão administrativa." : "");
         setConnections((current) =>
           current.map((connection) =>
-            connection.id === status.id
+            connection.id.toLowerCase() === connectionId.toLowerCase()
               ? { ...connection, ...status }
               : connection,
           ),
@@ -194,15 +207,11 @@ export function WhatsappConnectionsScreen({
           return;
         }
 
-        if (
-          status.status === "disconnected" ||
-          status.status === "error" ||
-          status.status === "reconnecting"
-        ) {
+        if (status.status !== "qr_ready") {
           setQrState(null);
         }
 
-        const existingQr = qrStateRef.current;
+        const existingQr = status.status === "qr_ready" ? qrStateRef.current : null;
         const isExistingQrExpired =
           existingQr !== null &&
           Date.parse(existingQr.expiresAt) <= Date.now();
@@ -210,17 +219,19 @@ export function WhatsappConnectionsScreen({
         const shouldRequestQr =
           status.status === "qr_ready" ||
           status.status === "connecting" ||
-          (status.status === "reconnecting" &&
-            existingQr !== null &&
-            Date.parse(existingQr.expiresAt) <= Date.now());
+          status.status === "reconnecting";
         const qrIsMissingOrExpiring =
-          !existingQr || Date.parse(existingQr.expiresAt) <= Date.now() + 3000;
+          status.status === "qr_ready" || !existingQr || Date.parse(existingQr.expiresAt) <= Date.now() + 3000;
 
-        if (shouldRequestQr && qrIsMissingOrExpiring) {
+        if (shouldRequestQr && qrIsMissingOrExpiring && !status.authenticationIssue) {
           try {
             const qr = await getWhatsappConnectionQr(connectionId);
             if (stopped) return;
-            if (!hasPngDataUrl(qr)) {
+            if (!qr.qrCode) {
+              // QR generation and the 515 handoff legitimately return null.
+              setQrState(null);
+              setQrError("");
+            } else if (!hasPngDataUrl(qr)) {
               setQrError("A API retornou um QR Code em formato inválido.");
               setQrState(null);
             } else if (Date.parse(qr.expiresAt) > Date.now()) {
@@ -308,6 +319,7 @@ export function WhatsappConnectionsScreen({
   }
 
   async function toggleActive(connection: WhatsappConnection) {
+    if (connection.isActive && !window.confirm(`Inativar "${connection.name}" e desconectar a sessão? As credenciais serão preservadas.`)) return;
     if (!beginAction(connection.id)) return;
     setActionError("");
     try {
@@ -362,6 +374,7 @@ export function WhatsappConnectionsScreen({
   }
 
   async function disconnect(connection: WhatsappConnection) {
+    if (!window.confirm(`Desconectar "${connection.name}"? As credenciais serão preservadas.`)) return;
     if (!beginAction(connection.id)) return;
     setActionError("");
     try {
@@ -376,21 +389,35 @@ export function WhatsappConnectionsScreen({
     }
   }
 
-  async function logoutConnection(connection: WhatsappConnection) {
+  async function recoverPairing(connection: WhatsappConnection) {
     if (actionInFlightRef.current.has(connection.id)) return;
     const confirmed = window.confirm(
-      `Encerrar a sessão de "${connection.name}"? As credenciais serão removidas e será necessário escanear um novo QR Code para conectar novamente.`,
+      `Autorizar novo pareamento de "${connection.name}"? O estado atual será preservado em cópia recuperável e uma nova autenticação será preparada somente para esta conexão. Será necessário escanear um novo QR Code. Contatos e mensagens serão preservados.`,
     );
     if (!confirmed) return;
 
     if (!beginAction(connection.id)) return;
     setActionError("");
     try {
-      await logoutWhatsappConnection(connection.id);
+      await recoverWhatsappPairing(connection.id);
       if (qrConnectionId === connection.id) clearQrModal();
       setToastMessage(
-        "Sessão encerrada. Será necessário escanear um novo QR Code para conectar novamente.",
+        "Estado anterior preservado. Clique em Conectar para escanear um novo QR Code.",
       );
+      refreshList();
+    } catch (error) {
+      setActionError(errorMessage(error));
+    } finally {
+      endAction(connection.id);
+    }
+  }
+
+  async function retryStorage(connection: WhatsappConnection) {
+    if (!beginAction(connection.id)) return;
+    setActionError("");
+    try {
+      await retryWhatsappStorage(connection.id);
+      setToastMessage("Retomada solicitada com as credenciais existentes.");
       refreshList();
     } catch (error) {
       setActionError(errorMessage(error));
@@ -507,7 +534,7 @@ export function WhatsappConnectionsScreen({
                           {STATUS_LABELS[connection.status]}
                         </span>
                         <span className="whatsapp-status-description">
-                          {STATUS_DESCRIPTIONS[connection.status]}
+                          {connection.authenticationIssue ? AUTH_MESSAGES[connection.authenticationIssue] ?? "A sessão exige revisão administrativa." : STATUS_DESCRIPTIONS[connection.status]}
                         </span>
                       </td>
                       <td>
@@ -549,7 +576,7 @@ export function WhatsappConnectionsScreen({
                                   connection.status === "error") && (
                                   <button
                                     className="secondary-button whatsapp-action-button"
-                                    disabled={busyIds.has(connection.id)}
+                                    disabled={busyIds.has(connection.id) || !!connection.authenticationIssue}
                                     onClick={() =>
                                       void startConnection(connection)
                                     }
@@ -580,17 +607,26 @@ export function WhatsappConnectionsScreen({
                                   Desconectar
                                 </button>
                               )}
-                              <button
+                              {connection.isActive && connection.authenticationIssue === "storage_failure" && (connection.status === "disconnected" || connection.status === "error") && <button
+                                className="secondary-button whatsapp-action-button"
+                                disabled={busyIds.has(connection.id)}
+                                onClick={() => void retryStorage(connection)}
+                                title="Tentar retomar com as credenciais existentes após verificar o armazenamento"
+                                type="button"
+                              >
+                                Retomar sessão
+                              </button>}
+                              {connection.requiresPairingRecovery && (connection.status === "disconnected" || connection.status === "error") && <button
                                 className="icon-button whatsapp-logout-button"
                                 disabled={busyIds.has(connection.id)}
                                 onClick={() =>
-                                  void logoutConnection(connection)
+                                  void recoverPairing(connection)
                                 }
-                                title="Encerrar sessão e remover credenciais"
+                                title="Preservar o estado anterior e autorizar novo pareamento"
                                 type="button"
                               >
-                                Encerrar sessão
-                              </button>
+                                Autorizar novo pareamento
+                              </button>}
                             </>
                           )}
                         </div>
@@ -756,12 +792,13 @@ export function WhatsappConnectionsScreen({
                           : "A sessão está desconectada."}
                       </strong>
                       <span>
-                        Inicie a conexão novamente para solicitar um novo QR
-                        Code.
+                        {qrConnection.authenticationIssue
+                          ? AUTH_MESSAGES[qrConnection.authenticationIssue] ?? "A sessão exige revisão administrativa."
+                          : "Inicie a conexão novamente para solicitar um novo QR Code."}
                       </span>
                       <button
                         className="primary-button"
-                        disabled={busyIds.has(qrConnection.id)}
+                        disabled={busyIds.has(qrConnection.id) || !!qrConnection.authenticationIssue}
                         onClick={() => void retryConnection()}
                         type="button"
                       >

@@ -1,0 +1,1591 @@
+[
+  {
+    "path": ".gitignore",
+    "bytes": 1521,
+    "sha256": "43baa1fa748cc14b467b558671e152d3fdb8148c57496e67d679f7f5f3109f7d"
+  },
+  {
+    "path": "README.md",
+    "bytes": 3381,
+    "sha256": "07a557c44711de7f2713bbcb79508466981d49555cb24880db94a2c576076a52"
+  },
+  {
+    "path": "backend/.env.example",
+    "bytes": 1594,
+    "sha256": "f77f4beedadd7c7a72404cf44a14992619cb6a64999edb2a6b70d077dbf39cb9"
+  },
+  {
+    "path": "backend/package-lock.json",
+    "bytes": 183290,
+    "sha256": "e1e4fbb96ce945b25abf197f0fbd6aa9b9f511e1667fd59c85d00883d8f8dfb9"
+  },
+  {
+    "path": "backend/package.json",
+    "bytes": 2509,
+    "sha256": "8a52a47726cf2bfb4c465e588a7298ebe80201313a9f16dcf6177059c0844a03"
+  },
+  {
+    "path": "backend/scripts/conversations-connectivity.test.cjs",
+    "bytes": 8193,
+    "sha256": "bf9722a19cd959136a1e901a2bfd00150c20eea48a8a7a167d23d7dd708d3219"
+  },
+  {
+    "path": "backend/scripts/database.cjs",
+    "bytes": 5009,
+    "sha256": "19e2fb4a2764e4033a81703e3fa026cd5ad85db428e968b7becf73a65771598e"
+  },
+  {
+    "path": "backend/scripts/generate-baseline.cjs",
+    "bytes": 3530,
+    "sha256": "f3f636f6856001df444f851a9b76c18f75f73f8612aa58b9b389091c33cc8b3e"
+  },
+  {
+    "path": "backend/scripts/generate-recipient-schema.cjs",
+    "bytes": 1864,
+    "sha256": "6c564a27af9ba5b6a240ea967e2777d2fd3e4eac9f523bcae8fa2426623a73cf"
+  },
+  {
+    "path": "backend/scripts/inspect-conversation-schema.cjs",
+    "bytes": 4923,
+    "sha256": "70555941cf9d0285dfb0e5c353a5944c71c4d2e70e7c9f1b776d2b9ff302ec1f"
+  },
+  {
+    "path": "backend/scripts/inspect-registration-schema.cjs",
+    "bytes": 5046,
+    "sha256": "88ef3ef543c0dd95f4888ff562a481ddb4d71220b37d3f1e587fd5d3d3d659e4"
+  },
+  {
+    "path": "backend/scripts/inspect-users-schema.cjs",
+    "bytes": 3584,
+    "sha256": "757be511669de9e53794f1c2a23acd12f3bee571ed0b3dd8487bd02a91e6c559"
+  },
+  {
+    "path": "backend/scripts/install-new.cjs",
+    "bytes": 5180,
+    "sha256": "ba4239fff1c7e07a887cdb5d6932aeded8fa79bfcea887586c654caca665875a"
+  },
+  {
+    "path": "backend/scripts/integration-connectivity.test.cjs",
+    "bytes": 2553,
+    "sha256": "1fabbaa69c28cb3b81368859db2492c81e6f46a8dcb6527ff8f63f5b01cfe9c1"
+  },
+  {
+    "path": "backend/scripts/messages-connectivity.test.cjs",
+    "bytes": 3685,
+    "sha256": "0a10c231750f53d097dd2bf660f35e792bb1d2e6662139f857e5b482fc6b28bd"
+  },
+  {
+    "path": "backend/scripts/registrations-connectivity.test.cjs",
+    "bytes": 5994,
+    "sha256": "21a0f418aa10942a08745fc376fb2b557b41aa4daccd86aff662e997af93236b"
+  },
+  {
+    "path": "backend/scripts/schema-audit.cjs",
+    "bytes": 2122,
+    "sha256": "86ee1cf1cac017b8d7b1022266cd3aacff65f830c63249ca59207f7e67fa1d48"
+  },
+  {
+    "path": "backend/scripts/sql-connectivity.test.cjs",
+    "bytes": 2569,
+    "sha256": "5de4f0438b1bfb669e494dc1e9fd668099d43fac728b5e35fe842fc43e7b5f62"
+  },
+  {
+    "path": "backend/scripts/sql/create-clean-database.sql",
+    "bytes": 449,
+    "sha256": "ec509d7f42db4943dfeb56db9a64757000f9e9e2f1fd71e4398974ad4be08938"
+  },
+  {
+    "path": "backend/scripts/users-profiles.cjs",
+    "bytes": 4521,
+    "sha256": "2df588b4f98bbf4c01536887a3366563eff0cf01cb05b8033190a0d18fd11fde"
+  },
+  {
+    "path": "backend/scripts/verify-install.cjs",
+    "bytes": 4965,
+    "sha256": "4f55b75a8e2818565124d5970151b7a01279ed983b74c95e4351aee933582c15"
+  },
+  {
+    "path": "backend/src/app.controller.ts",
+    "bytes": 323,
+    "sha256": "8e314ba57bcaa96ae214e543a4a5303250a2c0dbb8bee4930df2b5974cc5a02b"
+  },
+  {
+    "path": "backend/src/app.module.ts",
+    "bytes": 2148,
+    "sha256": "9769963899ba11882e2e0881da3d7eb5c9f59c1bb61479d28504c535c13c4963"
+  },
+  {
+    "path": "backend/src/application.ts",
+    "bytes": 1519,
+    "sha256": "83506a67ca4bbd33741e05676e5abe8f89afce52a03f08830a8c3334d2ebc839"
+  },
+  {
+    "path": "backend/src/auth/auth.controller.ts",
+    "bytes": 1025,
+    "sha256": "b34590853934a9135e2fbf1681079e44e6a9f845ac2e4bdf571f9e638cb33e43"
+  },
+  {
+    "path": "backend/src/auth/auth.module.ts",
+    "bytes": 1233,
+    "sha256": "8b3c2a065d414cdf4db0c1098b8cc6774f7f0acfa552f939df964d93b7905f06"
+  },
+  {
+    "path": "backend/src/auth/auth.service.ts",
+    "bytes": 1440,
+    "sha256": "17f5027cf8b80cebf09edeacfed206043fcefdcd48d94bed0253dfb9a29402c2"
+  },
+  {
+    "path": "backend/src/auth/decorators/current-user.decorator.ts",
+    "bytes": 322,
+    "sha256": "e4b1e4d73181a4e370c4ac713ba7dd48a70828ea1f79b4ceeba9a23818156e0e"
+  },
+  {
+    "path": "backend/src/auth/decorators/public.decorator.ts",
+    "bytes": 150,
+    "sha256": "bb149c7568f240afbabb885243d83abe7ec86fe6a27777ba4d028b7fb3b463dc"
+  },
+  {
+    "path": "backend/src/auth/guards/admin.guard.ts",
+    "bytes": 533,
+    "sha256": "cb28d71f097421e709b9d0666969122ce68bb52264e606dcc8be1fea5cff934e"
+  },
+  {
+    "path": "backend/src/auth/guards/auth.guard.ts",
+    "bytes": 2508,
+    "sha256": "d46888b7ec6cc70b2aa6bbf4a4520f8a7afdec38d5b072d7aa7d2410534216e8"
+  },
+  {
+    "path": "backend/src/auth/guards/delete-permission.guard.ts",
+    "bytes": 653,
+    "sha256": "7fec8e0b9e18a5b641b6d4ac495e74557ddda315b5be990873576aec48801a41"
+  },
+  {
+    "path": "backend/src/auth/guards/tester-permission.guard.ts",
+    "bytes": 1545,
+    "sha256": "5ea400b7cf9e1992aec96ca6fc4b13fd347ffec70a85de1c703a2af7a09d9ff6"
+  },
+  {
+    "path": "backend/src/automatic-messages/automatic-messages.module.ts",
+    "bytes": 7575,
+    "sha256": "047dac475bf5dd21f44d192f37b0f0abea429693bb25ab0b2718afa2c9e8f3c9"
+  },
+  {
+    "path": "backend/src/bulk-send/bulk-send.module.ts",
+    "bytes": 1053,
+    "sha256": "96edd5999c93912d22b17a8b6437e4f66a7b3f43bf049fc82fa6543587205450"
+  },
+  {
+    "path": "backend/src/bulk-send/entities/recipient-selection.entity.ts",
+    "bytes": 6581,
+    "sha256": "2851b11dcade0d8d38a3a8217d0b950f2ecfd1c13f736c1bbd04089b6475200f"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-catalog.service.ts",
+    "bytes": 16467,
+    "sha256": "3eba989ca7a900b0bdc3d737582c2a59d747375bfec8cffc92c8b26be0518a67"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-phone.ts",
+    "bytes": 168,
+    "sha256": "092201347e4b3f7dad6719584da3cd6c090ba1558670d24eb9e17e78737c87ad"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-selection-engine.ts",
+    "bytes": 8073,
+    "sha256": "2555cf6cb71fc5422e2d4166eba3ad5d57dc942b61b9cfc63207e998ab427e12"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-selection-store.ts",
+    "bytes": 25335,
+    "sha256": "f6866a41c7236d8a060fe248c412ebbcc7d8cb68ec18b4c64d0eb5b638649c71"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-selection.dto.ts",
+    "bytes": 1251,
+    "sha256": "502f4d0c9118f2967a976a914c2a83d42eb968d45886f0519d7a2ad9c51d6ca1"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-selections.controller.ts",
+    "bytes": 2814,
+    "sha256": "12af079eeb24488eadcf85ea2dea5f9ad55392a070abd2eb5c1c24e4b687940b"
+  },
+  {
+    "path": "backend/src/bulk-send/recipient-selections.service.ts",
+    "bytes": 7882,
+    "sha256": "8b380ec6be6dd216268e66b1c57c494edbcdba86d5cd439e69e37948138c4fe1"
+  },
+  {
+    "path": "backend/src/common/api-exception.filter.ts",
+    "bytes": 1209,
+    "sha256": "d2b7450edea570f09ec77d5ebca07c2d782df1154d433e52ca578667a2a823de"
+  },
+  {
+    "path": "backend/src/config/database.ts",
+    "bytes": 2783,
+    "sha256": "297faad3f0877373202e102b5fab572bb49e8d974aae848aaf461c049a8a81a2"
+  },
+  {
+    "path": "backend/src/config/environment.ts",
+    "bytes": 2913,
+    "sha256": "c409dcf77af14a0155655fc59d071a7d17b4d54916a426729d93ae4f5864ba12"
+  },
+  {
+    "path": "backend/src/contact-display-settings/contact-display-settings.controller.ts",
+    "bytes": 706,
+    "sha256": "a7c166d83f45d68d64e5718a94374c6112e201cb9879a2b122bad7a44901a12a"
+  },
+  {
+    "path": "backend/src/contact-display-settings/contact-display-settings.module.ts",
+    "bytes": 579,
+    "sha256": "623f420aef13556c39d4bedf61c850ae454dd8f5a9310afb7406fc105d4665f8"
+  },
+  {
+    "path": "backend/src/contact-display-settings/contact-display-settings.service.ts",
+    "bytes": 1060,
+    "sha256": "83065dbe044de0efa85ab7f508eec3f5ea4de990e2a7fe40f87c7e0bfa154a2c"
+  },
+  {
+    "path": "backend/src/contact-display-settings/dto/update-contact-display-setting.dto.ts",
+    "bytes": 494,
+    "sha256": "7f0a49cc19179aaa786889620facc7229d0f2ce07e4935f4894eeba878a0c307"
+  },
+  {
+    "path": "backend/src/contact-display-settings/entities/contact-display-setting.entity.ts",
+    "bytes": 792,
+    "sha256": "cd29b23b6e171bd7e75a82a6e4e97585055d2cd3e725b767dd884ddd50fd431d"
+  },
+  {
+    "path": "backend/src/contact-types/contact-types.controller.ts",
+    "bytes": 1340,
+    "sha256": "6367385d7ca22f68b766f8ce465de0c577a2501c0aee15598e2a68ee97d5eacf"
+  },
+  {
+    "path": "backend/src/contact-types/contact-types.module.ts",
+    "bytes": 549,
+    "sha256": "475368e40db9a8d562e9bedb373707219cb0b02971130e23cf0253c01636efc4"
+  },
+  {
+    "path": "backend/src/contact-types/contact-types.service.ts",
+    "bytes": 2019,
+    "sha256": "714e99ce1a2b5a843a44c68a75830d5fc928a9734cb767cb581fa9f160c407f4"
+  },
+  {
+    "path": "backend/src/contact-types/dto/create-contact-type.dto.ts",
+    "bytes": 506,
+    "sha256": "24d449233e071c15614b899734d315562b9900295ed4ba49bd5e46a2a25ae40d"
+  },
+  {
+    "path": "backend/src/contact-types/dto/update-contact-type-active.dto.ts",
+    "bytes": 186,
+    "sha256": "0eb606457741b1a04a684aaac86e52d954c9272155f5567e941f92a381beca56"
+  },
+  {
+    "path": "backend/src/contact-types/dto/update-contact-type.dto.ts",
+    "bytes": 566,
+    "sha256": "1c5d3b15732941bac299c516c070cefa5b6d0e47c897c9eaa6d349a2fa6bbb03"
+  },
+  {
+    "path": "backend/src/contact-types/entities/contact-type.entity.ts",
+    "bytes": 621,
+    "sha256": "9842ede584346fa65ba6d987692f492b1bda0dcd264fa27f2a7815463e90c1b4"
+  },
+  {
+    "path": "backend/src/contacts/contact-campaign-preferences.controller.ts",
+    "bytes": 1888,
+    "sha256": "c36310cff4b9b5c0a38989773e930d64b0131c6e927ec38a1c78e82f321c9791"
+  },
+  {
+    "path": "backend/src/contacts/contact-campaign-preferences.service.ts",
+    "bytes": 12173,
+    "sha256": "d2b78ba7d8b8d8040d7c383d70f6a6d1b9e3d20044107433b5e74b2f2e8a288e"
+  },
+  {
+    "path": "backend/src/contacts/contact-normalization.ts",
+    "bytes": 2433,
+    "sha256": "800666a936d75e0d3caee5c601b5d3883c4a6dea1ccacc399228d889da1ae709"
+  },
+  {
+    "path": "backend/src/contacts/contacts.controller.ts",
+    "bytes": 1511,
+    "sha256": "59f5e8e5ffaa27b0a6a632d965542bd661f75ffe1fecac07e53d01ddf19905d0"
+  },
+  {
+    "path": "backend/src/contacts/contacts.module.ts",
+    "bytes": 1164,
+    "sha256": "7664614e162f7a442b104752a79d0baac796e3e2f52f1f3a4e7f11f81e676696"
+  },
+  {
+    "path": "backend/src/contacts/contacts.service.ts",
+    "bytes": 14522,
+    "sha256": "c3f2771d71621fe13439ee99f50ee0bd5d764513654b529793e143f36a8c7e31"
+  },
+  {
+    "path": "backend/src/contacts/dto/campaign-preference.dto.ts",
+    "bytes": 1075,
+    "sha256": "1d414db43cd273782b958c1c66b263fe9538a0e59e28e37971c6a2c824c2e5a5"
+  },
+  {
+    "path": "backend/src/contacts/dto/create-contact.dto.ts",
+    "bytes": 1418,
+    "sha256": "f7bb0ff0335e6a2315c554319ee6aeafb190f95b07a93b3652c4b8a9958f6e79"
+  },
+  {
+    "path": "backend/src/contacts/dto/find-contacts-query.dto.ts",
+    "bytes": 1647,
+    "sha256": "ea66b1a12f57a60f986754f8d6c45d5d914f67f420038710a6589a09f9150cd3"
+  },
+  {
+    "path": "backend/src/contacts/dto/update-contact-active.dto.ts",
+    "bytes": 182,
+    "sha256": "f063319e4c3aa7786767177e266f08df240e9421c89dc7fb0f063a14823bbcf2"
+  },
+  {
+    "path": "backend/src/contacts/dto/update-contact.dto.ts",
+    "bytes": 1651,
+    "sha256": "8b192d0b72bff00fb51100ed563ab721eb4a1edbaa609417fb79986e528d1f94"
+  },
+  {
+    "path": "backend/src/contacts/entities/contact-campaign-preference.entity.ts",
+    "bytes": 4715,
+    "sha256": "d6199dce66edf4d86119d00549fdb9663424e553e74d132cc1e8bb01e87a57de"
+  },
+  {
+    "path": "backend/src/contacts/entities/contact.entity.ts",
+    "bytes": 1717,
+    "sha256": "54df3e4b3df23c593f45d97240dd053d4bad2f3a52dfd0a8b55f05c49b06527c"
+  },
+  {
+    "path": "backend/src/contacts/organization-context.ts",
+    "bytes": 2272,
+    "sha256": "4b4bd03c7ffd7bf110b26fc1f57f49305c0a5565dc553168d64711368d2dee9e"
+  },
+  {
+    "path": "backend/src/data-exchange/data-exchange.module.ts",
+    "bytes": 15433,
+    "sha256": "c71d7d0ca733a7e4cacb7533f5fec40d4955227ddd0319ff4cc8800f37f3a9da"
+  },
+  {
+    "path": "backend/src/data-exchange/registration-export.ts",
+    "bytes": 6328,
+    "sha256": "cab4f80126deb88369eda972754a78e211aa8d7739ceac6775abf20c72400a0a"
+  },
+  {
+    "path": "backend/src/data-exchange/registration-plan.ts",
+    "bytes": 21557,
+    "sha256": "5c444a0c9131d9dbed537e8e0bd0213bc7d7afa9493ddd3dfd19665073205754"
+  },
+  {
+    "path": "backend/src/database/data-source.ts",
+    "bytes": 1525,
+    "sha256": "9d34df6a79ef3efe520a2ac9a0ac6f7b46fe125105cbfc70c01d15cd26cfdb40"
+  },
+  {
+    "path": "backend/src/database/migrations/1793016000000-InitialSchema.ts",
+    "bytes": 605,
+    "sha256": "b8bdf0f95175db165b20226e8721f1637ed9945e4d988adf18296c522e45595a"
+  },
+  {
+    "path": "backend/src/database/migrations/1793275200000-UserProfiles.ts",
+    "bytes": 3384,
+    "sha256": "b66de5734f5af6551157b46e1ec91fbf1d561d817745c93c5f2c5188c1d2e738"
+  },
+  {
+    "path": "backend/src/database/migrations/1793390400000-RecipientSelections.ts",
+    "bytes": 815,
+    "sha256": "8ac1960d99b63118d5c11545308ad60862f785e40898cf43e3c70da7391ecae2"
+  },
+  {
+    "path": "backend/src/database/migrations/schema-recipient-selections.ts",
+    "bytes": 7262,
+    "sha256": "e2f41d95e1295ad7afa7bad0788f84a9ec277a7d479c46ff163a5bd265f23f31"
+  },
+  {
+    "path": "backend/src/database/migrations/schema-v1.ts",
+    "bytes": 17774,
+    "sha256": "7f79c8a65a4da0104bac865d48b32bb8f0c3821d05aacc7c151bcc96b5e60855"
+  },
+  {
+    "path": "backend/src/events/domain-events.ts",
+    "bytes": 998,
+    "sha256": "6eb32ac8504c53beadf0c1fbe514a172db2859d4e45e726308653c82df4eec71"
+  },
+  {
+    "path": "backend/src/health/health.controller.ts",
+    "bytes": 787,
+    "sha256": "b1207c6ec3f23ffdfc6ba7e1a37d064f33fd7750d98a2d5227d540de9b3aff81"
+  },
+  {
+    "path": "backend/src/main.ts",
+    "bytes": 796,
+    "sha256": "ff96dbc9a1b89a60841375e3ed4e10eb67c72c4cb49628d7498a001c7b526eda"
+  },
+  {
+    "path": "backend/src/messages/file-policy.ts",
+    "bytes": 9901,
+    "sha256": "4527a5209d7b75a3c8888e42ed039b0ea43e28c5c73ecc73ec01db3b284b7783"
+  },
+  {
+    "path": "backend/src/messages/message-files.service.ts",
+    "bytes": 8056,
+    "sha256": "0a21673c5c00a7bf0660012eca81061bba99ef1128ba87c2d97f6b43092d449a"
+  },
+  {
+    "path": "backend/src/messages/message-provider.port.ts",
+    "bytes": 1024,
+    "sha256": "136d2aef7ec52a0f4618821d44d2b516d7001a982ff6026b64b0e2f110f2d42b"
+  },
+  {
+    "path": "backend/src/messages/messages.controller.ts",
+    "bytes": 10145,
+    "sha256": "e29c2d075861ae58af0bf78b1c273281356b45dedcd7b6bc04f44d424625a227"
+  },
+  {
+    "path": "backend/src/messages/messages.module.ts",
+    "bytes": 1559,
+    "sha256": "f9929f020a978273299a2892eb0c9cf0072025f43008b91e6e4e03c8ce377067"
+  },
+  {
+    "path": "backend/src/messages/messages.service.ts",
+    "bytes": 7122,
+    "sha256": "e861170e0503a32292dc4e7046b3248daf97de5e44d82449358a37195f25bd4d"
+  },
+  {
+    "path": "backend/src/messages/outbound-router.ts",
+    "bytes": 1892,
+    "sha256": "0eeabc181b72f7fd2a5b009e515617238991298f660ac6ccc66a9a7305ca3cf3"
+  },
+  {
+    "path": "backend/src/messages/private-file-storage.ts",
+    "bytes": 10592,
+    "sha256": "716d7c881512c10ad2bd3c4b52cb65eccded3aaabc6b56d293cd11c9ec466346"
+  },
+  {
+    "path": "backend/src/organization-types/dto/create-organization-type.dto.ts",
+    "bytes": 511,
+    "sha256": "d022e7622c50370e01b56ac6f3f9cc8b3a84dc89d8427f1bda9195737903d583"
+  },
+  {
+    "path": "backend/src/organization-types/dto/update-organization-type-active.dto.ts",
+    "bytes": 191,
+    "sha256": "9314cb257aa43ce80d817ae85fa9de02073daf3aa297b89e0efb7776cbee05d4"
+  },
+  {
+    "path": "backend/src/organization-types/dto/update-organization-type.dto.ts",
+    "bytes": 571,
+    "sha256": "d563b0babf747508a8df49e275382279e1bdd60a52919872d5c7a036cb7274e4"
+  },
+  {
+    "path": "backend/src/organization-types/entities/organization-type.entity.ts",
+    "bytes": 631,
+    "sha256": "c579afcfcf814987a5fbdc39c26a367820e41e86fd3e15033e2db44d89ee9a20"
+  },
+  {
+    "path": "backend/src/organization-types/organization-types.controller.ts",
+    "bytes": 1410,
+    "sha256": "a2b87aa2149f81b8e0d1c3a8c4251e6519be261bd77d83b15dd6159495f30152"
+  },
+  {
+    "path": "backend/src/organization-types/organization-types.module.ts",
+    "bytes": 619,
+    "sha256": "0983dd21a4e0011d23c51cdf9e8e464630f0b0143383765ebd665e501a7eadac"
+  },
+  {
+    "path": "backend/src/organization-types/organization-types.service.ts",
+    "bytes": 3122,
+    "sha256": "800b4e387527d6a6a5073c3f21a1ec03af551b87d8bb457e935ddc6c65578018"
+  },
+  {
+    "path": "backend/src/organizations/dto/create-organization.dto.ts",
+    "bytes": 787,
+    "sha256": "c1868d7ac080a79c1b4f5cb91f08254f2c22df8b283828b1cbe2b6eaa622cd71"
+  },
+  {
+    "path": "backend/src/organizations/dto/update-organization-active.dto.ts",
+    "bytes": 187,
+    "sha256": "2a3fc661742478fa814911899ddfa6002c2aeea3d2121d8039bb54b7c72839c5"
+  },
+  {
+    "path": "backend/src/organizations/dto/update-organization.dto.ts",
+    "bytes": 945,
+    "sha256": "4715452ff3da18b8e06f960e4c94e66877f8ebcea2f922df06a74f9929999373"
+  },
+  {
+    "path": "backend/src/organizations/entities/organization.entity.ts",
+    "bytes": 1680,
+    "sha256": "f0681cba6e78cfb7af63d045169171040da7573aa23b2fb042a9c4500bdc832d"
+  },
+  {
+    "path": "backend/src/organizations/organizations.controller.ts",
+    "bytes": 1349,
+    "sha256": "b4789a71880beb4c3565a7a8481f3ec7af413365b5f884154b45fbdd753379a9"
+  },
+  {
+    "path": "backend/src/organizations/organizations.module.ts",
+    "bytes": 678,
+    "sha256": "437e7294fc85521f8a9b08e32ece3bf5500dcdcbc4f2c60c38d6a16ad97fe816"
+  },
+  {
+    "path": "backend/src/organizations/organizations.service.ts",
+    "bytes": 8482,
+    "sha256": "f33b151fa6233fcc3a73a9fcd04861ef9ba9860d9e1b159f1b5ad0e4eca6b834"
+  },
+  {
+    "path": "backend/src/users/dto/create-user.dto.ts",
+    "bytes": 940,
+    "sha256": "d7a3a7c1151250428fd594a9590a41b7c255b8841bb5a5ffa57f34aec691a2ba"
+  },
+  {
+    "path": "backend/src/users/dto/update-user-active.dto.ts",
+    "bytes": 173,
+    "sha256": "e32a324c3fa75070a9044460ff013dda10edcde8e7539639e96fc51ce5fc2dc2"
+  },
+  {
+    "path": "backend/src/users/dto/update-user-delete-permission.dto.ts",
+    "bytes": 185,
+    "sha256": "39e5a3cd86ae27402f9654baf6fb5fcc08f0cf1b5d5b0e336df22ff850166a87"
+  },
+  {
+    "path": "backend/src/users/dto/update-user.dto.ts",
+    "bytes": 1233,
+    "sha256": "389159a0858a7db6b3b9e5bba70219c230e997c51de9bf74cf66c75d54587917"
+  },
+  {
+    "path": "backend/src/users/dto/user-profile.dto.ts",
+    "bytes": 870,
+    "sha256": "389660721e9ac92f32a5db62ada7af6736c439f174440730e3a9fef6cc1e292e"
+  },
+  {
+    "path": "backend/src/users/entities/user.entity.ts",
+    "bytes": 872,
+    "sha256": "9d4e72ef0df70122dfcdbdc822dc596d4f16688c44702d7c165e1eb057889576"
+  },
+  {
+    "path": "backend/src/users/password-hash.ts",
+    "bytes": 566,
+    "sha256": "13397fb44d2ccd3f66fe253d4fda0420127d643bbc1ac03bfc9142eca5c77e12"
+  },
+  {
+    "path": "backend/src/users/user-profile.ts",
+    "bytes": 501,
+    "sha256": "48e70c8eba05c9cd2bd26dd86c8a3ff948c36fcf46ffd8ea7a2e4b830cb3d0cf"
+  },
+  {
+    "path": "backend/src/users/users-profile.store.ts",
+    "bytes": 2801,
+    "sha256": "97a5f9d2b42c5167ab40b78614b3331a32267362e63cb7bcecf8acc4b8f6b9ff"
+  },
+  {
+    "path": "backend/src/users/users.controller.ts",
+    "bytes": 1530,
+    "sha256": "2ba4741128668f8a7562188590ccaa171e77eb112b7cc179d84129f4d99e851f"
+  },
+  {
+    "path": "backend/src/users/users.module.ts",
+    "bytes": 584,
+    "sha256": "ebdf87fd5388c0cb8e318d643f618c3ce0e15638519ea83671f1807d166557cd"
+  },
+  {
+    "path": "backend/src/users/users.service.ts",
+    "bytes": 8199,
+    "sha256": "7cb9bf41decf2b32db299b53b5b348d5a690f2329a0885262dc6edbe61621238"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/conversation-message-records.service.ts",
+    "bytes": 6081,
+    "sha256": "a6ff1acaf51399d6d7915ae343df6a4ca9638c44f0bf1d5122b56ba04bc5874b"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/conversation-query.ts",
+    "bytes": 492,
+    "sha256": "964a659ca6605afc318b16a7cc6d5e5361c10394cd175c7a391d3a73f6a32833"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/dto/assign-whatsapp-attendance.dto.ts",
+    "bytes": 189,
+    "sha256": "6f48daaec55bccac69ea63ecd7cf9168657dd13253e34c270c3c18ec366e611f"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/dto/find-whatsapp-conversations-query.dto.ts",
+    "bytes": 670,
+    "sha256": "f2e4eec550b7d6931b202e10aeef6f00dee1d86ae2a22b9bff0e23cf3a9c555b"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/dto/find-whatsapp-messages-query.dto.ts",
+    "bytes": 137,
+    "sha256": "40fc247ba0966bbb097267fc8923965c698ac47dd53691b369182304db9d37de"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/dto/pagination-query.dto.ts",
+    "bytes": 584,
+    "sha256": "ea3a8d0704569b1cd6cd24e69933f25b1223b427ea2b83014d3d9b6af5c36ed7"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/dto/update-whatsapp-conversation-contact.dto.ts",
+    "bytes": 274,
+    "sha256": "4621d09920a4ef9e7d3b91e703976dcce68ffcff092d6a966e7edf3c2afd2402"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/entities/whatsapp-conversation.entity.ts",
+    "bytes": 2340,
+    "sha256": "ce815df456135c10950aee1439cf17f26f6b263de440a48dbb7f6ca1f61358e7"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/entities/whatsapp-message-media.entity.ts",
+    "bytes": 1492,
+    "sha256": "f48ceb4a31a5e2c850df3ad57bfd63fbf32935fa31df0a39cd0e6a481329a133"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/entities/whatsapp-message.entity.ts",
+    "bytes": 1447,
+    "sha256": "3c9191075ff077de8cea3060fe660271a4bb92a493a8b68ac34947addba05861"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/message-record.port.ts",
+    "bytes": 767,
+    "sha256": "f9649fcf01901f1d55af2b8fb64404ec63a2a371ea8d1f1c7875f5bc927922de"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/whatsapp-attendance.service.ts",
+    "bytes": 5979,
+    "sha256": "1564e3455e9bbfa867ecdcedb50be2439ed2e1cfa297541e6a676a3ce029d38a"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/whatsapp-conversations.controller.ts",
+    "bytes": 2836,
+    "sha256": "87d4a4cbcbe334f73a0849e4ef34b726775d232c10be4e0c1089d2ede90c943d"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/whatsapp-conversations.module.ts",
+    "bytes": 1482,
+    "sha256": "c43dd4a8730543e44f6a7f401673944c7082215484dd07d7901d6226c7bc1d50"
+  },
+  {
+    "path": "backend/src/whatsapp-conversations/whatsapp-conversations.service.ts",
+    "bytes": 5502,
+    "sha256": "62b36af81215469be23de4d46898c2c7df1e74ef643248f45a90d2f7e29d4ea1"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/baileys-socket.factory.ts",
+    "bytes": 14773,
+    "sha256": "fbe5652e483e05eda37070b11ea55c4d1ae9e48c9293f0a822983c41cdbfc0f9"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/connection-manager.ts",
+    "bytes": 24490,
+    "sha256": "74f8883c640d7caeb88c76f833163a4524cb35c749628d76c20c52147b8bdd52"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/connection-registry.ts",
+    "bytes": 1691,
+    "sha256": "f7568bde12583c260471a42c9646fbb2a403d1bd76a299d29c0812650a546bf1"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/connections.controller.ts",
+    "bytes": 4296,
+    "sha256": "2622e5dbab4cda1fde841e70d4ca7ada3c4a64249f9ae90bf0ae988449ec3071"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/contracts.ts",
+    "bytes": 3228,
+    "sha256": "5df504b5c6c7c5c29cdf9cd151a450f7c103f7cc60de14c0a7e8a6a8cbc8a0c2"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/encrypted-state.store.ts",
+    "bytes": 7787,
+    "sha256": "b2e5f32a596ebd3a28882ddea91273a997dac090d402c302900e997f602808a6"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/identity-resolver.ts",
+    "bytes": 3852,
+    "sha256": "ee8641dc1cf2c118534aa454394ededbf216466d8255c76346fb519a901a65d7"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/incoming-pipeline.ts",
+    "bytes": 22928,
+    "sha256": "b9dda64cb5fe05287554b4b67a126e9322016a8edad9d0bede6b515d1ae98539"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/integration-policy.ts",
+    "bytes": 2196,
+    "sha256": "fe3393e69a175f0ab7960ad02b5a7ac2f5b9e224892265559603e2ee607f15f0"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/media-download.ts",
+    "bytes": 6372,
+    "sha256": "89a1912a5644cf6657775d032d0e4f7d88d90a1c4c1d06b7523c06aa7427f6e3"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/normalize-message.ts",
+    "bytes": 5237,
+    "sha256": "ff3c0c90c36fd2e0b6c642e61541e53ffeddd5b8e67222c44a682adf3f92210b"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/outbound-adapter.ts",
+    "bytes": 12498,
+    "sha256": "c4347724ce920770ed539936aa8ab0e0b68e4201b9a1effd826b07c25976e5bd"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/realtime.controller.ts",
+    "bytes": 5369,
+    "sha256": "0cc5d153cec085f6394de7c53217ab05d07e783ae4c06a877b9c4700df810411"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/receive-metrics.ts",
+    "bytes": 3808,
+    "sha256": "74aa5dcfa185fa613c8e0cac81918c48162fd71e090da1fee03a7a3d2dff1039"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/socket-lease.ts",
+    "bytes": 5777,
+    "sha256": "03c7a1478439a932d28e1c14a480d7f0458dc461f50a2c719db01565f6cda9df"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/state-codec.ts",
+    "bytes": 1087,
+    "sha256": "c6e9f4c946ef759b0d3a7b1b144ab55cd403e338fb6c047ce857201287f687cd"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/storage-diagnostics.ts",
+    "bytes": 1389,
+    "sha256": "9cb77bf2e980b0ea9182515ce3b5c68b915297ed773d390cb6b37991df7dee12"
+  },
+  {
+    "path": "backend/src/whatsapp-integration/whatsapp-integration.module.ts",
+    "bytes": 1978,
+    "sha256": "424e1d5c0eff94940ed7fc0b9b84fd3b6bcd4e635dcc351c31d1c89a01b1518c"
+  },
+  {
+    "path": "backend/test/application.test.cjs",
+    "bytes": 4996,
+    "sha256": "e3b45428e235fbca4d57aa4c4dc38d77cf1510a2dd58806e5970e4d8b5b9f809"
+  },
+  {
+    "path": "backend/test/auth-storage.test.cjs",
+    "bytes": 8396,
+    "sha256": "6998a45438707060ca4e5d6a8e348c796551fb47a2385ff13c5b4233297c7b20"
+  },
+  {
+    "path": "backend/test/auth-users.test.cjs",
+    "bytes": 24405,
+    "sha256": "e46d5f72281591856509ef362c2e9382d91c08ad328b049898d01ab7c6d884a3"
+  },
+  {
+    "path": "backend/test/automatic-restore.test.cjs",
+    "bytes": 10324,
+    "sha256": "513ae560cb0948887dabf02f4fec127d88ad50c60d58fa646423a8a796ce053f"
+  },
+  {
+    "path": "backend/test/baileys-rc14-contract.test.cjs",
+    "bytes": 2225,
+    "sha256": "a7d0f9f9e6b6b94a475d63baf7eb00219a1ce1c0d353b720adba8d45d6380cb3"
+  },
+  {
+    "path": "backend/test/campaign-preferences.test.cjs",
+    "bytes": 9211,
+    "sha256": "e13ae625cbc3f3b4ced3b29a3c7712224ad066ce0d6d16c561855bc85b3c9397"
+  },
+  {
+    "path": "backend/test/conversations.test.cjs",
+    "bytes": 17788,
+    "sha256": "2e2a1b08e53ddef6ff98776c4a9c21abc7aeb72b48f80e1909e20b9ee9979b20"
+  },
+  {
+    "path": "backend/test/environment.test.cjs",
+    "bytes": 5006,
+    "sha256": "c5775318defcde2c257b7aa5eb7fcd34ccd33ead9c1bef8d10bfdf66c3b33667"
+  },
+  {
+    "path": "backend/test/helpers/conversations-fixture.cjs",
+    "bytes": 14461,
+    "sha256": "b8bbe961f01e2982ba6b6a1e4812dd494a362d6f50742da0c72ee0657d8fab0e"
+  },
+  {
+    "path": "backend/test/helpers/registrations-fixture.cjs",
+    "bytes": 14539,
+    "sha256": "b7bafa20a67a6a7144e172f4f7e71dd0fecdfae218ccbb592a15f42aa5032713"
+  },
+  {
+    "path": "backend/test/helpers/selection-database.fixture.cjs",
+    "bytes": 7192,
+    "sha256": "7bef1821c4533c74f5ee2f7e6a914624f0d337051a227ce1436eb7508804e36f"
+  },
+  {
+    "path": "backend/test/install-new.test.cjs",
+    "bytes": 5228,
+    "sha256": "cf3de2df48fb7ba3e721967b6f677d542f7324ddf082acea86ba98e04f1f24f4"
+  },
+  {
+    "path": "backend/test/messages.test.cjs",
+    "bytes": 21066,
+    "sha256": "ce66d0c1485dfb9c7eafe0b47811d2a0134b0f96621273c99688b3290948d276"
+  },
+  {
+    "path": "backend/test/modernization.test.cjs",
+    "bytes": 4165,
+    "sha256": "fa1a20bc76e97e50b5c1bf7ab4d40620fea8cdafa878cd9acbcdd2136e44b9e7"
+  },
+  {
+    "path": "backend/test/pairing-reconnect.test.cjs",
+    "bytes": 20601,
+    "sha256": "1c05ac3dc1bed50eea9bd0aba4c5bcecc68c69ff5050cca35c6058dcf6ba793b"
+  },
+  {
+    "path": "backend/test/receive-end-to-end.test.cjs",
+    "bytes": 9950,
+    "sha256": "3d8fd6d8524415789b6dfe8f451420b87e177c8d09b2ee43af0849a04042f8eb"
+  },
+  {
+    "path": "backend/test/recipient-selections.test.cjs",
+    "bytes": 14191,
+    "sha256": "569451f1b05a403b0cb530b99f2525b94eb47e7dc72decb5206d8fd4b3bc57a8"
+  },
+  {
+    "path": "backend/test/registration-exchange.test.cjs",
+    "bytes": 14739,
+    "sha256": "67e94c547c3ab47f3a12f1aa66844fa9b17d3216dd478264920a5bd353a19f56",
+    "sampleRedacted": true
+  },
+  {
+    "path": "backend/test/registrations.test.cjs",
+    "bytes": 14463,
+    "sha256": "1f05504992be5ada0b52529f2eb1818c10d5a1d9a59b88d8bbcff289e5717ec3"
+  },
+  {
+    "path": "backend/test/release-audio.test.cjs",
+    "bytes": 2179,
+    "sha256": "c87bee4ab4e1a87b14d09f4a22d11e074f81796fd3f74c4b8b6ff46339770293"
+  },
+  {
+    "path": "backend/test/release-install.test.cjs",
+    "bytes": 9469,
+    "sha256": "4c7b84319aad9e5dc370dc0a1e5a196c5f3bcaffe6a608fd67e271032163c0ea"
+  },
+  {
+    "path": "backend/test/send-diagnostics.test.cjs",
+    "bytes": 5468,
+    "sha256": "5bb7254929a5c16ff5d82ba3ee8bef0ca0ebbede8c9f9d7beb57ff4c7e7fb02e"
+  },
+  {
+    "path": "backend/test/users-schema.test.cjs",
+    "bytes": 9522,
+    "sha256": "48d753ea02999c7740024a257202ec7fb82e69a0bf3f8d8537660019ccbca06f"
+  },
+  {
+    "path": "backend/test/whatsapp-integration.test.cjs",
+    "bytes": 27533,
+    "sha256": "9803c0072487bf16b9e498572e4782498d243020afe46beabca1e6a4edc9c301"
+  },
+  {
+    "path": "backend/test/whatsapp-rc14.test.cjs",
+    "bytes": 26288,
+    "sha256": "d0a091ffe3fb600bfc08390506f75bdf17cdace5482a725de1d672d242123977"
+  },
+  {
+    "path": "backend/tsconfig.json",
+    "bytes": 379,
+    "sha256": "3c160a3e3db7c06b69fe078e49fee8b17730b00d0d19008d0468a0b41908b39e"
+  },
+  {
+    "path": "deploy/iis/api.web.config.example",
+    "bytes": 447,
+    "sha256": "b0e2e9124889d1dad35cf860b6b793724cf036e7d13efe13d9866051eb2fc05a"
+  },
+  {
+    "path": "deploy/iis/frontend.web.config.example",
+    "bytes": 446,
+    "sha256": "35b5a3e89c2a18890d7e1d9e82617ae2ae576de509cec935878883cbb3fb3c70"
+  },
+  {
+    "path": "docs/ATUALIZACAO.md",
+    "bytes": 3598,
+    "sha256": "5ef5450835d054058a284177ad5a85d06e5a8e087fc4ccc69ccf0a028f273a5d"
+  },
+  {
+    "path": "docs/BACKUP-RESTAURACAO.md",
+    "bytes": 2598,
+    "sha256": "895f644a57cc1e139c8e5f7597e59a8b4a72008b7d6563d3134ba22aa2c9a3c8"
+  },
+  {
+    "path": "docs/BANCO-DE-DADOS.md",
+    "bytes": 910,
+    "sha256": "f0749f9bca656829841122cc39c09f1b5303e52fb11b79fd43435e8e6b73c05d"
+  },
+  {
+    "path": "docs/CADASTROS-EXCEL-UNIFICADO.md",
+    "bytes": 10614,
+    "sha256": "fcc907cdbe45ec763c7dcf0c0535724fce0b2068c37c84095030a23c18e43204"
+  },
+  {
+    "path": "docs/CONFIGURACAO-SQL-SERVER.md",
+    "bytes": 5391,
+    "sha256": "0cda10b33b2317dc2caca22d3b95f271fa3a8f84f1b9312558b4b45e7369e390"
+  },
+  {
+    "path": "docs/CONFIGURACAO.md",
+    "bytes": 4110,
+    "sha256": "b38cf6851d15537cfb968499987e641f34616a267d02a386390819e5ebcdadd6"
+  },
+  {
+    "path": "docs/DEPLOY-IIS.md",
+    "bytes": 3468,
+    "sha256": "ae0557fd20663d148e6c5d5cc62893160cd2d2f40b5f61c0cb9e96604a68e970"
+  },
+  {
+    "path": "docs/INSTALACAO-WINDOWS.md",
+    "bytes": 10146,
+    "sha256": "96253553f60b2ee4327757373185ef095247953ed39d36d40b79fa489b07ea4d"
+  },
+  {
+    "path": "docs/MODERNIZACAO-VISUAL.md",
+    "bytes": 16058,
+    "sha256": "3ad7de736450658bf122e860ec2baf56d38e1f7a84701514098e25c030d45677"
+  },
+  {
+    "path": "docs/PREPARACAO-GITHUB.md",
+    "bytes": 6724,
+    "sha256": "29a7429613c48218a46668885c2a2bec763d5507b3ab373b750f4c3c5d8f20bc"
+  },
+  {
+    "path": "docs/PREPARACAO-PUBLICACAO-2026-11-03.md",
+    "bytes": 12085,
+    "sha256": "42fb8ee2a347b9350ba2d311a437b870297c47ab0b3ca59aa6044a0908e66748"
+  },
+  {
+    "path": "docs/RECONEXAO-AUTOMATICA.md",
+    "bytes": 11404,
+    "sha256": "4b738bd9de8212f97d98eb49ad3025f55d76d7773321655652ae736ac46566a2"
+  },
+  {
+    "path": "docs/gerenciamento-usuarios.md",
+    "bytes": 9755,
+    "sha256": "e54a72864dde02cf9beb4b90c2120ea020c18a706e602b52eb72019168e6819f"
+  },
+  {
+    "path": "docs/plano-usuarios-v2.md",
+    "bytes": 13292,
+    "sha256": "6daf09e17345629f5cd1190a06d0733cd60f0f1528ebf3dcb2cbab0b83ccdd66"
+  },
+  {
+    "path": "docs/release-v1/AUDITORIA-INICIAL.md",
+    "bytes": 3823,
+    "sha256": "1efd5eaeb64e662b985867879b1ebe229b432d4c780bc04fde91fb9bd406a997"
+  },
+  {
+    "path": "docs/release-v1/RELATORIO-FINAL.md",
+    "bytes": 14953,
+    "sha256": "e093b4bb57397737a50ae568670421bd076d2776838fcda7c9f576d21031ad7a"
+  },
+  {
+    "path": "frontend/.editorconfig",
+    "bytes": 66,
+    "sha256": "394bdd651bea12c83ed6343e00ab4c72e0da7beedc1c4cd4d8fdef7221f51353"
+  },
+  {
+    "path": "frontend/.env.example",
+    "bytes": 108,
+    "sha256": "844559ed6dbfa8cb012bd3b5f85522ec1453f5a5aecdeec02e9694334a4408df"
+  },
+  {
+    "path": "frontend/.gitignore",
+    "bytes": 510,
+    "sha256": "4ee24f422ff36147197a4bd8d60db60f0adbfc930df875a85c25283605c9795c"
+  },
+  {
+    "path": "frontend/AGENTS.md",
+    "bytes": 679,
+    "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0"
+  },
+  {
+    "path": "frontend/README.md",
+    "bytes": 779,
+    "sha256": "a99c8f508b7bce88a53cba67dce9397d64f9929b3b0a4d194e7474f9739b2a1d"
+  },
+  {
+    "path": "frontend/app/favicon.ico",
+    "bytes": 15086,
+    "sha256": "c28fdd2a4f31e2dc64f653962286da5c82a4cdfc518b242d32812c624e9a19a4"
+  },
+  {
+    "path": "frontend/app/globals.css",
+    "bytes": 92331,
+    "sha256": "f083888880de12b5c1bb76e782d042f4d3a68702ee8fcc10b6578ae6073ee666"
+  },
+  {
+    "path": "frontend/app/layout.tsx",
+    "bytes": 908,
+    "sha256": "0c8d97962f244963a310443fcf2d0576f91258bb115c2e9e8f7cc5aba702f1ec"
+  },
+  {
+    "path": "frontend/app/login/page.tsx",
+    "bytes": 134,
+    "sha256": "d4ddec17bb73632134abfb1364e27c420641e03a1c2de3bf184d33a28ca87ba5"
+  },
+  {
+    "path": "frontend/app/page.tsx",
+    "bytes": 142,
+    "sha256": "437c8e44bce661805a2b70b9ac4a8d25d93b51bc146949751c2281a078375552"
+  },
+  {
+    "path": "frontend/app/themes.css",
+    "bytes": 19749,
+    "sha256": "ee0b33e6345e13c2b17e5440ed246606fb0ee757cc3d2bcdf78b31bf04d5cdc6"
+  },
+  {
+    "path": "frontend/components/app-shell.tsx",
+    "bytes": 5975,
+    "sha256": "3a7a1c8b541a04483d469512b4afa229a7b14726ca8c20d335c43fa289590611"
+  },
+  {
+    "path": "frontend/components/appearance/appearance-settings.tsx",
+    "bytes": 1944,
+    "sha256": "9ae095f476a96eef6d80baf52a4c095adf36959b266c0b9971dea7c4c811ee84"
+  },
+  {
+    "path": "frontend/components/appearance/theme-provider.tsx",
+    "bytes": 1395,
+    "sha256": "3973a9b5f7570b32a5e7cb138fd8008bbe7f2aa8f1308bbc19a670041d795088"
+  },
+  {
+    "path": "frontend/components/appearance/theme-storage.ts",
+    "bytes": 3239,
+    "sha256": "cd6a8e0428121b89972ece03c7228e50643332e2522c32ca2337d0f238bd89f0"
+  },
+  {
+    "path": "frontend/components/auth/auth-provider.tsx",
+    "bytes": 5346,
+    "sha256": "49ce40affa3adde4d131ac33c289ff20b02cab996b6b7af337cfc0247814554b"
+  },
+  {
+    "path": "frontend/components/auth/login-screen.tsx",
+    "bytes": 3845,
+    "sha256": "1fa8c0d58805f3f9806288caf2101b10bcd721adb448646e58c299cb862f18b1"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-dialog.tsx",
+    "bytes": 867,
+    "sha256": "9774952b6d2afb632dfe7062d5f299222a2d3e570d149d9c75910bd951fce18f"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-history.tsx",
+    "bytes": 2978,
+    "sha256": "e517f17e6033b210a3d659e8293f9e308841b0dff3a49885424f84cde193f3cc"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-message.tsx",
+    "bytes": 7403,
+    "sha256": "74e339221366179f8f0873dbe549314e8f969cc52bb68a919968391f83ee25be"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-model.ts",
+    "bytes": 10233,
+    "sha256": "4fe9ccdc692801280d78238650706d7fcd0a29a64a2f9888597261eda891284c"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-recipients.tsx",
+    "bytes": 10373,
+    "sha256": "9e5b3ce90d915fcaf7ecfbf6510f45cb167195d01ce04386233cfaebf71ce7b6"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-review.tsx",
+    "bytes": 5297,
+    "sha256": "7883993e99f01695db2f256ebd9367b1a385d9f0a643d1e8bdcdbc62b78544a1"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign-schedule.tsx",
+    "bytes": 5219,
+    "sha256": "9fba5b463ea44faf935079e89b5fbd6adc5a8541cddcf8f39692a8a0d3397f38"
+  },
+  {
+    "path": "frontend/components/bulk-send/campaign.css",
+    "bytes": 19097,
+    "sha256": "72bedf39be0f9ac83f4c484b33bae73cd978fdc9df45b4ea6d4315e2a81bc04d"
+  },
+  {
+    "path": "frontend/components/bulk-send/recipient-filters.tsx",
+    "bytes": 5579,
+    "sha256": "be7b47c8bbc67074f4707da6e4bb5d53d2261bc5e409e85b335ef5db61c188aa"
+  },
+  {
+    "path": "frontend/components/bulk-send/recipient-selection-screen.tsx",
+    "bytes": 11937,
+    "sha256": "e271db9f3c2a162cc955fc1149f27a33e6bf8815719b3d38a49112834f4af31a"
+  },
+  {
+    "path": "frontend/components/bulk-send/selection-token.ts",
+    "bytes": 844,
+    "sha256": "7c769fbc30d5b2e6c57c53af8be624bccf5f7bf6bee33e8ec85f5be44344c8b5"
+  },
+  {
+    "path": "frontend/components/bulk-send/use-recipient-selection.ts",
+    "bytes": 6913,
+    "sha256": "d41eb30727eea5e34bb8870313cf5cddd4ed2930f84199de64d35ced6a57fb81"
+  },
+  {
+    "path": "frontend/components/contacts/campaign-preferences-modal.tsx",
+    "bytes": 20200,
+    "sha256": "6342f07181e4330a849cf43b8166bca081164e619b44573c584f302606fecdd3"
+  },
+  {
+    "path": "frontend/components/contacts/contact-form-modal.tsx",
+    "bytes": 12629,
+    "sha256": "0d8c77c42be0b15e07c11e8041f1ef593d14f4994fe7666ad8255c9899d12628"
+  },
+  {
+    "path": "frontend/components/contacts/contact-list.tsx",
+    "bytes": 8388,
+    "sha256": "f9db167b604da28a05ac5a75755a073714091f66e34d18bdf174274c3b5458fe"
+  },
+  {
+    "path": "frontend/components/contacts/contacts-screen.tsx",
+    "bytes": 28439,
+    "sha256": "7e70b4707f36580ed5e72b98fdd8cd8196b2cb5d86fdd4b0c16ca5e352b00107"
+  },
+  {
+    "path": "frontend/components/excel-actions.tsx",
+    "bytes": 11112,
+    "sha256": "b44ef8cf0d9fbd99fb283ad9d9997abd82f31db76baa4c136beb4f81f417a613"
+  },
+  {
+    "path": "frontend/components/full-text-input.tsx",
+    "bytes": 996,
+    "sha256": "efed917ef609c4df4d8b4983491e0ed7db11fc948e81818e515177e1493c4f76"
+  },
+  {
+    "path": "frontend/components/full-text-select.tsx",
+    "bytes": 1728,
+    "sha256": "7e59ecbac4684511483d23a81e92dd7527a4bd07936563f24216cb21b41197de"
+  },
+  {
+    "path": "frontend/components/icons.tsx",
+    "bytes": 3943,
+    "sha256": "328aac2ceb3347b746edebd1f413d7ed002e32f8c36a2c688e691092438821b8"
+  },
+  {
+    "path": "frontend/components/organization-role.ts",
+    "bytes": 492,
+    "sha256": "78dec238fab58cea181dd190b6246034cae65c6e3f62951bd021b6b1156b1842"
+  },
+  {
+    "path": "frontend/components/profile-avatar.tsx",
+    "bytes": 2598,
+    "sha256": "984dc64c9a82400f89335b23727be5ecd7d23add6fc476294e21b93a68715242"
+  },
+  {
+    "path": "frontend/components/profile-photo-cache.ts",
+    "bytes": 1828,
+    "sha256": "0839afdf57d8b5f9967d39c02ec5c14ef311dd8cf342e08b180b7b0129f46d15"
+  },
+  {
+    "path": "frontend/components/section-navigation.ts",
+    "bytes": 1541,
+    "sha256": "fe1bc9c7fc9646d90b6bd389668a9ef37f653ead536879cd3ff612472ffbf2dd"
+  },
+  {
+    "path": "frontend/components/settings/automatic-messages-screen.tsx",
+    "bytes": 6406,
+    "sha256": "55b525ee2665a09d2dd233acc9f93525cccb7edf1a73cc3f81762d21d7e3b836"
+  },
+  {
+    "path": "frontend/components/settings/data-exchange-screen.tsx",
+    "bytes": 3957,
+    "sha256": "0f6c661321663dd5e4c7630eaec9215a478475faf9e6698aff0cddf28ef3570d"
+  },
+  {
+    "path": "frontend/components/settings/organization-tree.ts",
+    "bytes": 2442,
+    "sha256": "66350dd4b65d08dbd1c1cd3ecc20369004b8bdefc702e2962add94d4290dd041"
+  },
+  {
+    "path": "frontend/components/settings/settings-entity-modal.tsx",
+    "bytes": 13311,
+    "sha256": "fa7a0330a349069b6dfad956ee8a91cc81399c027bc996b12e5f6bddfea18663"
+  },
+  {
+    "path": "frontend/components/settings/settings-home.tsx",
+    "bytes": 2775,
+    "sha256": "e9757f0baf339f4b9a079802516ea0ca4b57b45cedff698ae3582aa61e0e48e6"
+  },
+  {
+    "path": "frontend/components/settings/settings-screen.tsx",
+    "bytes": 29237,
+    "sha256": "f24956b3c7be6b875dbf27e3023ab52afb0332ead2c50f2ecd1f4f0e5803494e"
+  },
+  {
+    "path": "frontend/components/settings/users-management.tsx",
+    "bytes": 23435,
+    "sha256": "f653ad11e8ee7fd52ba5a8da48d2a5ff4ea707ac1f7073c23ffe72896a9d2acd"
+  },
+  {
+    "path": "frontend/components/sidebar-preference.ts",
+    "bytes": 1062,
+    "sha256": "6b594f4e7f5d6e3202620cec2eb401d148078d852d0a64ea177c3757d47769b7"
+  },
+  {
+    "path": "frontend/components/whatsapp/attachment-composer.tsx",
+    "bytes": 12010,
+    "sha256": "f004544e8e82ba22644cf7fbeefc9cf5aa911534b1feb045cf1d7a928759f7f0"
+  },
+  {
+    "path": "frontend/components/whatsapp/attachment-selection.ts",
+    "bytes": 1662,
+    "sha256": "fdf687c07d80065556de913298e8c8f279d7a09319c1b48be25e0ca3826fe86d"
+  },
+  {
+    "path": "frontend/components/whatsapp/audio-recorder.tsx",
+    "bytes": 21805,
+    "sha256": "9477990546f3d3589bbe714f2e3a6a8b1c0940de66db08492d3fbbe3bba15981"
+  },
+  {
+    "path": "frontend/components/whatsapp/audio-recording.ts",
+    "bytes": 2911,
+    "sha256": "01fe5e81870b0e5f7af0f985c43b096d31d4f81285ebfeb41ffb65c9d4f6f572"
+  },
+  {
+    "path": "frontend/components/whatsapp/conversation-attendance-controls.tsx",
+    "bytes": 17048,
+    "sha256": "b11941e4bd69eefa7892cd41001d7b637a3e684025438a9a7cbca3ed4b3d72b6"
+  },
+  {
+    "path": "frontend/components/whatsapp/conversation-attendance.ts",
+    "bytes": 1723,
+    "sha256": "8f0784a87d8c145e3b393762a398b8710634ef8e5fcfee9c62ec36f1ed5b1ebd"
+  },
+  {
+    "path": "frontend/components/whatsapp/conversation-contact-modal.tsx",
+    "bytes": 9367,
+    "sha256": "84013c1ddc59308642ecd3366c5aeee9b5041bac2c68695dc236564d85ac864d"
+  },
+  {
+    "path": "frontend/components/whatsapp/conversation-media.tsx",
+    "bytes": 7291,
+    "sha256": "1979708a56320bc4a5ff7852518b6daabd8cb6e44fb6d63ab53df04a806af11a"
+  },
+  {
+    "path": "frontend/components/whatsapp/conversation-presentation.ts",
+    "bytes": 3078,
+    "sha256": "30b6884618220f0b46266c6697aba589831bb93d99b6592411cd3c0296c165ed"
+  },
+  {
+    "path": "frontend/components/whatsapp/image-transform.ts",
+    "bytes": 566,
+    "sha256": "e80a03163e30878d1982cd4aa14a4fa81bfa0fbdb3f08ef70206166d9405b48a"
+  },
+  {
+    "path": "frontend/components/whatsapp/image-viewer.tsx",
+    "bytes": 7640,
+    "sha256": "3657d8e6d941120a0b34e2d6d17ae424cccfa50b027eb4054ff6287ad7130aa8"
+  },
+  {
+    "path": "frontend/components/whatsapp/message-history.ts",
+    "bytes": 1196,
+    "sha256": "2fbd412ba8a5b0631067e312de6e1062d75044c53b71c8613d2f5d477165415e"
+  },
+  {
+    "path": "frontend/components/whatsapp/message-scroll.ts",
+    "bytes": 2825,
+    "sha256": "6778e93b9c701cba0c94ccfd1cff87a7ba076405c8aa1fa55d5a1654a263f081"
+  },
+  {
+    "path": "frontend/components/whatsapp/panel-width.ts",
+    "bytes": 1644,
+    "sha256": "83e8c8db4b8c7ec2deeaa2a0a18a2abf6ed73f1a04b467b3308422f4b2a817bc"
+  },
+  {
+    "path": "frontend/components/whatsapp/text-send-attempt.ts",
+    "bytes": 1090,
+    "sha256": "514e710c4fcfa4c5e1ae3a472be67c482e33fc66bd346a01c3595c82f3b33016"
+  },
+  {
+    "path": "frontend/components/whatsapp/use-conversation-split.tsx",
+    "bytes": 3565,
+    "sha256": "eec6a259b6d91e5791248cfc6fd148d71235b5676a51457e9878fedb046fb235"
+  },
+  {
+    "path": "frontend/components/whatsapp/use-message-scroll.ts",
+    "bytes": 1717,
+    "sha256": "39206a0e3ea63397ea5c98fb5858bb45bac08a2e460b817b8a08ee247f902504"
+  },
+  {
+    "path": "frontend/components/whatsapp/whatsapp-connections-screen.tsx",
+    "bytes": 32646,
+    "sha256": "21b2eb2c915992b9998f68d11f61d0a16fa895d8ab4cf53a094de43608b61736"
+  },
+  {
+    "path": "frontend/components/whatsapp/whatsapp-conversations-screen.tsx",
+    "bytes": 42240,
+    "sha256": "0e68d3f5ed3115a34e96a749cbabffa8d0b9bfe87a2c18ed798a715cd71fe368"
+  },
+  {
+    "path": "frontend/components/whatsapp/whatsapp-monitor-screen.tsx",
+    "bytes": 12245,
+    "sha256": "8fc0cdcf5cbdd9e0831682f44c3c9e5fd2e4f890a7d6a532fb8b1a34411ef222"
+  },
+  {
+    "path": "frontend/components/whatsapp/whatsapp-monitor.css",
+    "bytes": 2941,
+    "sha256": "455101b670a6d97cdbb8f89acdf9e10756fbf30764a9421798f50c7be6c7aa93"
+  },
+  {
+    "path": "frontend/eslint.config.mjs",
+    "bytes": 465,
+    "sha256": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493"
+  },
+  {
+    "path": "frontend/next.config.ts",
+    "bytes": 766,
+    "sha256": "41ce5d89f9470d7d21e5d5845be22dd0090d2f28eff93febe3e92fd0209134b9"
+  },
+  {
+    "path": "frontend/package-lock.json",
+    "bytes": 282108,
+    "sha256": "94e122ce8becbb3d9720f040a936a39ab2c2ff670d515be1a905be0cc244454b"
+  },
+  {
+    "path": "frontend/package.json",
+    "bytes": 771,
+    "sha256": "9a436cafd5690dace8200719824e5ef440e5365856841e0b365f5540a2995b91"
+  },
+  {
+    "path": "frontend/public/file.svg",
+    "bytes": 391,
+    "sha256": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4"
+  },
+  {
+    "path": "frontend/public/globe.svg",
+    "bytes": 1035,
+    "sha256": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf"
+  },
+  {
+    "path": "frontend/public/next.svg",
+    "bytes": 1375,
+    "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc"
+  },
+  {
+    "path": "frontend/public/vercel.svg",
+    "bytes": 128,
+    "sha256": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4"
+  },
+  {
+    "path": "frontend/public/window.svg",
+    "bytes": 385,
+    "sha256": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1"
+  },
+  {
+    "path": "frontend/services/api/auth-session.ts",
+    "bytes": 743,
+    "sha256": "9d461a91db105412848341efda90ca990e8d1db925dec7937cbf4b0b84d00a84"
+  },
+  {
+    "path": "frontend/services/api/auth.ts",
+    "bytes": 454,
+    "sha256": "ae10ad3dc8046377d0686ec4155a2f4ecaf9d5a7bd8bed3dc41fad4bf9af4329"
+  },
+  {
+    "path": "frontend/services/api/bulk-send.ts",
+    "bytes": 4722,
+    "sha256": "69a7512ceb56f5527714743ee364637b785d19c82cdf303e0590be0c1e026d91"
+  },
+  {
+    "path": "frontend/services/api/campaign-preferences.ts",
+    "bytes": 2182,
+    "sha256": "4d7cb7889fa5d6da7d7afbd6b396ef7241b3de4c4a849e9ef85876aed6795ed2"
+  },
+  {
+    "path": "frontend/services/api/client.ts",
+    "bytes": 3831,
+    "sha256": "9842261b60d19b04d8060be2d4d15d8f6520b2744a4d38584997c0e4fa62370f"
+  },
+  {
+    "path": "frontend/services/api/contacts.ts",
+    "bytes": 2595,
+    "sha256": "84aa19d5c2d070704d973be0b8e8e7060a0702ccdce8bcb2c4c56f43991741f9"
+  },
+  {
+    "path": "frontend/services/api/data-exchange.ts",
+    "bytes": 2713,
+    "sha256": "9590b02794ffb51cf6b51d78c61345f6a73d7b164b1dc257b51d9260e5230dd3"
+  },
+  {
+    "path": "frontend/services/api/settings.ts",
+    "bytes": 3635,
+    "sha256": "ffb4b1f9569df7c0c431387f4f74ae5590fe897de2164362fbad17d7aa80c3aa"
+  },
+  {
+    "path": "frontend/services/api/users.ts",
+    "bytes": 1479,
+    "sha256": "87461c7291da8428bf5b92b2640e5fa0cf84892b36c0964b769ca31ccd7e3de4"
+  },
+  {
+    "path": "frontend/services/api/whatsapp-connections.ts",
+    "bytes": 3352,
+    "sha256": "5def42df8a0eace6d3fd500d2f61d30f5a1dd088bbecf5726a6e4870e441a852"
+  },
+  {
+    "path": "frontend/services/api/whatsapp-conversations.ts",
+    "bytes": 5517,
+    "sha256": "63ac311c10690483872980d0f593bd4be0d12d1fc3c30e98f1490aee0b282bbd"
+  },
+  {
+    "path": "frontend/services/api/whatsapp-monitor.ts",
+    "bytes": 2266,
+    "sha256": "c3bf137d628374ba73378deaf0c4be46c6a2bd5902da2414b22c9e5d16911eba"
+  },
+  {
+    "path": "frontend/services/excel.ts",
+    "bytes": 4976,
+    "sha256": "d16e23b622b1b47051e3abdb6db086adf6b71c08e1864dde6e4ea351623e4789",
+    "sampleRedacted": true
+  },
+  {
+    "path": "frontend/tests/appearance.test.mjs",
+    "bytes": 7564,
+    "sha256": "5e1c1dbcd1c1618387a5fccbf0c734791497d0142fb0ed3c9571da5cf6328479"
+  },
+  {
+    "path": "frontend/tests/attachment-selection.test.mjs",
+    "bytes": 3600,
+    "sha256": "fde1e4bc72a6bbfa4d676e3f8664fdcf18f2be59195d9b551fff330591aeb945"
+  },
+  {
+    "path": "frontend/tests/audio-recording.test.mjs",
+    "bytes": 5095,
+    "sha256": "0d7e2e5a6d1dc76fadc1667727c0f8d5b639616a9f43a53140f7db7c1b496481"
+  },
+  {
+    "path": "frontend/tests/browser-contacts.mjs",
+    "bytes": 40986,
+    "sha256": "88fa2d03b95f91614178225c3ae5a2dd31ec023506b32df8cc9ac12e62dc4c50",
+    "sampleRedacted": true
+  },
+  {
+    "path": "frontend/tests/browser-interface.mjs",
+    "bytes": 29895,
+    "sha256": "751e82601bd08c36c0ec3db049d3f55383ce36de05f4142ebad8ac352ca56af4"
+  },
+  {
+    "path": "frontend/tests/browser-recipient-selection.mjs",
+    "bytes": 33097,
+    "sha256": "9c80acbba1d87263ddcffc166e1595c81cef459387761eac1a46b51cf7bf525e"
+  },
+  {
+    "path": "frontend/tests/browser-users.mjs",
+    "bytes": 14931,
+    "sha256": "5e8c76baa2ca1916d4702ad78240dbe856f9f83a6b19a20c44ba283e7d147bba"
+  },
+  {
+    "path": "frontend/tests/browser-whatsapp-pairing.mjs",
+    "bytes": 9429,
+    "sha256": "6707248032b673d266cf58f88815151ac1665d2232ee609295ad28b854565737"
+  },
+  {
+    "path": "frontend/tests/browser-whatsapp-receive.mjs",
+    "bytes": 8482,
+    "sha256": "a1b08112196688bc3724229d1958c7240048bfd29c86134c7bdbec9d9392beec"
+  },
+  {
+    "path": "frontend/tests/browser-whatsapp-send.mjs",
+    "bytes": 9656,
+    "sha256": "e772310b4301ee2d0b63cf0228df7d8808ee98ed62a6258cd2e68fbf0bd312f8"
+  },
+  {
+    "path": "frontend/tests/campaign-preparation.test.mjs",
+    "bytes": 6282,
+    "sha256": "c0b8491918c6cdf5129ad2c68e244ea20178663e0433968bc10898a31a7cf62a"
+  },
+  {
+    "path": "frontend/tests/conversation-preview.test.mjs",
+    "bytes": 1433,
+    "sha256": "1dfdbafc9f963f6cfac2792a7cd564c1e2151bbfd169e5c0eeae5a0bab8bb1ed"
+  },
+  {
+    "path": "frontend/tests/encoding.test.mjs",
+    "bytes": 996,
+    "sha256": "5a1a129a16c91c22ca7f42417dad33d5ca8c4946706fd5c1f14d4ac7197c87a1"
+  },
+  {
+    "path": "frontend/tests/excel.test.mjs",
+    "bytes": 4013,
+    "sha256": "93ffeeb168b7e6a437b56363fca35f9a16b60c3560037e99c5a7c2a1cd5f0627",
+    "sampleRedacted": true
+  },
+  {
+    "path": "frontend/tests/interface-layout.test.mjs",
+    "bytes": 3170,
+    "sha256": "4a85499aff2d66fd6c984bef8e2bce4bddd2fbb89a7b35377bd0c3fb7f8a0578"
+  },
+  {
+    "path": "frontend/tests/message-history.test.mjs",
+    "bytes": 1986,
+    "sha256": "35ae48fe25feef537c64b1407b2935ea5ba1ca5b579d24b54f7d5d7a9e4668c7"
+  },
+  {
+    "path": "frontend/tests/message-scroll.test.mjs",
+    "bytes": 5332,
+    "sha256": "e72983a28211d585a2c9e5e71b0e5f2cd252e750bd9b32d297c02755fd842b06"
+  },
+  {
+    "path": "frontend/tests/organization-tree.test.mjs",
+    "bytes": 2329,
+    "sha256": "7ff6fdb5336aae7883b39e58bcda7dc73bd726381b707984d0a0f1fd892df1f2"
+  },
+  {
+    "path": "frontend/tests/recipient-selection.test.mjs",
+    "bytes": 4068,
+    "sha256": "e0334bb0e0956dc35628d0219c47221dcd6d82c7a1dfaabc669c76c1e764b4d2"
+  },
+  {
+    "path": "frontend/tests/release-regressions.test.mjs",
+    "bytes": 2818,
+    "sha256": "e006027a6dd848bf677e48c361764ae69694aeb406e8c5faffe895176b8a2ade"
+  },
+  {
+    "path": "frontend/tests/section-navigation.test.mjs",
+    "bytes": 2096,
+    "sha256": "c3016f2e0c20a8df62aa89eeb4f4c48aff99b295a22e59a67d257d31ce3e112c"
+  },
+  {
+    "path": "frontend/tests/sidebar-and-photos.test.mjs",
+    "bytes": 3292,
+    "sha256": "573b7db9641a81c78398bc29994f847c334f19e5d2365cf9a3245378eec7e23c"
+  },
+  {
+    "path": "frontend/tests/text-send.test.mjs",
+    "bytes": 2394,
+    "sha256": "ae248856670dad96920f7e2ed34866f1af8abdebb8fe3e4c96cb4598199c9380"
+  },
+  {
+    "path": "frontend/tests/whatsapp-media.test.mjs",
+    "bytes": 4291,
+    "sha256": "dcccf6935b76de2732b88a423526bebaf8fe931532b70f5d8ae0a1ddbec887b5"
+  },
+  {
+    "path": "frontend/tsconfig.json",
+    "bytes": 666,
+    "sha256": "be18523b23b78b6e1a876ddd107d330f0168bddf09d751b57e0b5edce69c66f3"
+  },
+  {
+    "path": "frontend/types/api.ts",
+    "bytes": 4765,
+    "sha256": "239529e619771464b6fbd47c99e0d6ea7a0678c88c4733879a31a21d78d894f3"
+  },
+  {
+    "path": "scripts/install-windows.ps1",
+    "bytes": 8445,
+    "sha256": "fb784d80ebfa095521a01f08da615468a313543e22c78f43b8379e008e16c830"
+  },
+  {
+    "path": "scripts/prepare-release.cjs",
+    "bytes": 4382,
+    "sha256": "989549bf181fc9cf68eae8332e0be3ba849ca5cd0c5511a7a918c771c4dccbc9"
+  },
+  {
+    "path": "scripts/prepare-release.test.cjs",
+    "bytes": 2244,
+    "sha256": "29b17515fafbaefb71f44dadb4833911e0f50e038686df1e5ba461db3c2d13ce"
+  },
+  {
+    "path": "scripts/start-windows.ps1",
+    "bytes": 961,
+    "sha256": "f894b9f4e7a0888c60474f22876252e55d73ca6f524f332d7bf8bd72792b3677"
+  }
+]

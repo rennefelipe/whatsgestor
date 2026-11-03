@@ -1,15 +1,18 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 3000",
     "lint": "eslint",
-    "test:appearance": "node --test tests/appearance.test.mjs"
+    "test:appearance": "node --test tests/appearance.test.mjs",
+    "typecheck": "tsc --noEmit --incremental false",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "exceljs": "4.4.0",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"

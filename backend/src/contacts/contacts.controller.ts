@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { FindContactsQueryDto } from './dto/find-contacts-query.dto';
 import { UpdateContactActiveDto } from './dto/update-contact-active.dto';
@@ -22,6 +24,11 @@ export class ContactsController {
   @Get()
   findAll(@Query() query: FindContactsQueryDto) {
     return this.service.findAll(query);
+  }
+
+  @Get('options')
+  options() {
+    return this.service.options();
   }
 
   @Get(':id')
@@ -51,6 +58,7 @@ export class ContactsController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminGuard)
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.service.remove(id);
   }

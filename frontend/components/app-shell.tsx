@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
+import {
+  readSection,
+  writeSection,
+  subscribeSection,
+} from "./section-navigation";
+import type { Section } from "./section-navigation";
 import {
   readSidebar,
   writeSidebar,
@@ -10,34 +16,43 @@ import { useAuth } from "./auth/auth-provider";
 import { Icon } from "./icons";
 import type { IconName } from "./icons";
 
-export type Section =
-  "contacts" | "settings" | "whatsapp-connections" | "conversations";
+export type { Section } from "./section-navigation";
 
 export function AppShell({
   children,
   onSectionChange,
 }: Readonly<{
-  children: (section: Section) => React.ReactNode;
+  children: (
+    section: Section,
+    navigate: (section: Section) => void,
+  ) => React.ReactNode;
   onSectionChange?: (section: Section) => void;
 }>) {
-  const [section, setSection] = useState<Section>("contacts");
+  const storedSection = useSyncExternalStore(
+    subscribeSection,
+    readSection,
+    () => "conversations" as Section,
+  );
+  const navigate = (next: Section) => {
+    writeSection(next);
+    onSectionChange?.(next);
+  };
   const { user, logout } = useAuth();
+  const section: Section = user?.role === "tester" ? "contacts" : storedSection;
   const collapsed = useSyncExternalStore(
     subscribeSidebar,
     () => readSidebar(user?.id),
     () => false,
   );
 
-  const items: { id: Section; label: string; icon: IconName }[] = [
-    { id: "contacts", label: "Contatos", icon: "contacts" },
-    {
-      id: "whatsapp-connections",
-      label: "Conexões WhatsApp",
-      icon: "whatsapp",
-    },
-    { id: "conversations", label: "Conversas", icon: "conversations" },
-    { id: "settings", label: "Configurações", icon: "settings" },
-  ];
+  const inSettings = section !== "conversations" && section !== "bulk-send";
+  const items: { id: Section; label: string; icon: IconName }[] = user?.role === "tester"
+    ? [{ id: "contacts", label: "Contatos", icon: "contacts" }]
+    : [
+      { id: "conversations", label: "Conversas", icon: "conversations" },
+      { id: "bulk-send", label: "Envio em Lote", icon: "bulk-send" },
+      { id: "settings", label: "Configurações", icon: "settings" },
+    ];
 
   return (
     <div
@@ -68,19 +83,18 @@ export function AppShell({
           <span aria-hidden="true">{collapsed ? "›" : "‹"}</span>
           <span className="sidebar-toggle-label">Recolher menu</span>
         </button>
-        <div className="sidebar-section-label">Workspace</div>
+        <div className="sidebar-section-label">WhatsGestor</div>
         <nav className="nav-list" id="main-navigation">
           {items.map((item) => (
             <button
-              aria-current={section === item.id ? "page" : undefined}
+              aria-current={section === item.id || (item.id === "settings" && inSettings) ? "page" : undefined}
               aria-label={item.label}
               aria-describedby={`nav-tooltip-${item.id}`}
               title={item.label}
-              className={`nav-item${section === item.id ? " active" : ""}`}
+              className={`nav-item${section === item.id || (item.id === "settings" && inSettings) ? " active" : ""}`}
               key={item.id}
               onClick={() => {
-                setSection(item.id);
-                onSectionChange?.(item.id);
+                navigate(item.id);
               }}
               type="button"
             >
@@ -104,7 +118,7 @@ export function AppShell({
                 <Icon name="user" size={20} />
                 <span className="sidebar-account-label">
                   <strong title={user.username}>{user.username}</strong>
-                  <small>{user.isAdmin ? "Administrador" : "Usuário"}</small>
+                  <small>{user.role === "tester" ? "Testador" : user.isAdmin ? "Administrador" : "Atendente"}</small>
                 </span>
               </div>
               <button
@@ -127,7 +141,7 @@ export function AppShell({
               </summary>
               <div className="sidebar-account-menu">
                 <strong>{user.username}</strong>
-                <small>{user.isAdmin ? "Administrador" : "Usuário"}</small>
+                <small>{user.role === "tester" ? "Testador" : user.isAdmin ? "Administrador" : "Atendente"}</small>
                 <button
                   type="button"
                   className="secondary-button"
@@ -141,7 +155,10 @@ export function AppShell({
         )}
       </aside>
 
-      <div className="workspace">{children(section)}</div>
+      <div className="workspace">
+        {inSettings && section !== "settings" && user?.role !== "tester" && <div className="settings-back-bar"><button type="button" className="secondary-button" onClick={() => navigate("settings")}><span aria-hidden="true">←</span> Voltar às configurações</button></div>}
+        {children(section, navigate)}
+      </div>
     </div>
   );
 }

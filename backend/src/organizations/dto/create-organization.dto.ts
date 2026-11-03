@@ -12,10 +12,10 @@ export class CreateOrganizationDto {
   @IsString({ message: 'O nome deve ser um texto.' })
   @IsNotEmpty({ message: 'O nome é obrigatório.' })
   @MaxLength(150, { message: 'O nome deve ter no máximo 150 caracteres.' })
-  name: string;
+  name!: string;
 
   @IsUUID('all', { message: 'organizationTypeId deve ser um UUID válido.' })
-  organizationTypeId: string;
+  organizationTypeId!: string;
 
   @IsOptional()
   @IsUUID('all', { message: 'parentOrganizationId deve ser um UUID válido.' })

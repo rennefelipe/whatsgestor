@@ -10,6 +10,7 @@ import { CreateOrganizationTypeDto } from './dto/create-organization-type.dto';
 import { UpdateOrganizationTypeActiveDto } from './dto/update-organization-type-active.dto';
 import { UpdateOrganizationTypeDto } from './dto/update-organization-type.dto';
 import { OrganizationType } from './entities/organization-type.entity';
+import { organizationRole } from '../contacts/organization-context';
 
 @Injectable()
 export class OrganizationTypesService {
@@ -40,9 +41,28 @@ export class OrganizationTypesService {
     id: string,
     dto: UpdateOrganizationTypeDto,
   ): Promise<OrganizationType> {
-    const organizationType = await this.findOne(id);
-    Object.assign(organizationType, dto);
-    return this.organizationTypes.save(organizationType);
+    return this.organizationTypes.manager.transaction(async (manager) => {
+      await manager.query(
+        'SELECT TOP (1) [id] FROM [dbo].[organizations] WITH (TABLOCKX,HOLDLOCK)',
+      );
+      const types = manager.getRepository(OrganizationType);
+      const organizationType = await types.findOneBy({ id });
+      if (!organizationType)
+        throw new NotFoundException('Tipo de organização não encontrado.');
+      if (
+        dto.name !== undefined &&
+        organizationRole(dto.name) !==
+          organizationRole(organizationType.name) &&
+        (await manager
+          .getRepository(Organization)
+          .existsBy({ organizationTypeId: id }))
+      )
+        throw new ConflictException(
+          'Este tipo está em uso. Alterar sua classificação reclassificaria organizações existentes; cadastre o tipo desejado e revise os vínculos explicitamente em Organizações.',
+        );
+      Object.assign(organizationType, dto);
+      return types.save(organizationType);
+    });
   }
 
   async updateActive(
