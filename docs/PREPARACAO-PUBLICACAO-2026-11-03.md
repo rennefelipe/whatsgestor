@@ -48,7 +48,7 @@ Execução em uma cópia isolada fora da instalação ativa, com dependências d
 | Backend: build de produção executado pelo `pretest` | Passou |
 | Backend: suíte `npm test` | 211 passaram, zero falhas/pulados |
 | Backend: `npm run typecheck` | Passou |
-| Novo provisionador: testes offline | 6 passaram, incluindo repetição, schema desconhecido, senha, escape SQL e resolução de instância com doubles |
+| Novo provisionador: testes offline | 7 passaram, incluindo proteção do ambiente atual, repetição, schema desconhecido, senha, escape SQL e resolução de instância com doubles |
 | Frontend: suíte `npm test` | 84 passaram, zero falhas/pulados |
 | Frontend: build de produção e typecheck | Passaram |
 | Frontend: lint | Passou, com 3 avisos em testes de navegador existentes |
@@ -57,7 +57,7 @@ Execução em uma cópia isolada fora da instalação ativa, com dependências d
 | Escrita privada PowerShell | ACL protegida com duas regras, conteúdo preservado e sobrescrita recusada em arquivo fictício temporário |
 | Frontend compilado servido em porta isolada | `/login` respondeu HTTP 200 com conteúdo WhatsGestor; processo de teste encerrado |
 
-Total: **304 testes automatizados aprovados**, além das verificações descritas. A página de login acessível não comprova autenticação real no banco.
+Total: **305 testes automatizados aprovados**, além das verificações descritas. A página de login acessível não comprova autenticação real no banco.
 
 A comparação SHA-256 dos 315 arquivos previamente inventariados encontrou apenas as cinco alterações previstas em documentação, ignore e exportador; nenhum arquivo inventariado foi removido. Os 252 arquivos inventariados de frontend e fontes do backend permaneceram idênticos. Não houve alteração na lógica WhatsApp, nos ambientes reais ou nos serviços existentes.
 

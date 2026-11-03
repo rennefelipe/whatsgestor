@@ -61,8 +61,8 @@
   },
   {
     "path": "backend/scripts/install-new.cjs",
-    "bytes": 5180,
-    "sha256": "ba4239fff1c7e07a887cdb5d6932aeded8fa79bfcea887586c654caca665875a"
+    "bytes": 5426,
+    "sha256": "aecba267c387a3d497c4065e58e5996bd671ec8179696c880c776d40812f5924"
   },
   {
     "path": "backend/scripts/integration-connectivity.test.cjs",
@@ -811,8 +811,8 @@
   },
   {
     "path": "backend/test/install-new.test.cjs",
-    "bytes": 5228,
-    "sha256": "cf3de2df48fb7ba3e721967b6f677d542f7324ddf082acea86ba98e04f1f24f4"
+    "bytes": 5520,
+    "sha256": "44f64b014d00287884c000e40bffabbfd6898d8f1dba327a7e978f40ba52410d"
   },
   {
     "path": "backend/test/messages.test.cjs",
@@ -947,8 +947,8 @@
   },
   {
     "path": "docs/PREPARACAO-PUBLICACAO-2026-11-03.md",
-    "bytes": 12085,
-    "sha256": "42fb8ee2a347b9350ba2d311a437b870297c47ab0b3ca59aa6044a0908e66748"
+    "bytes": 12115,
+    "sha256": "2db7994bfd45f87e8e6d63efecf907526eb5ecee6f671e149b6623a4995ebd8c"
   },
   {
     "path": "docs/RECONEXAO-AUTOMATICA.md",

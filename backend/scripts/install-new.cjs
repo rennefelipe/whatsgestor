@@ -78,7 +78,10 @@ async function main(argv = process.argv.slice(2)) {
   if (action === 'resolve-instance') {
     if (argv.length !== 1) throw Error('CONFIG_REQUIRED');
     const file = path.resolve(argv[0]);
-    const values = await resolveInstance(parse(fs.readFileSync(file)));
+    if (file.toLowerCase() === path.resolve(__dirname, '../.env').toLowerCase()) throw Error('LIVE_ENV_CANNOT_BE_TARGET_FILE');
+    const parsed = parse(fs.readFileSync(file));
+    database.target({ action: 'plan', config: file, database: parsed.DB_DATABASE });
+    const values = await resolveInstance(parsed);
     fs.writeFileSync(file, Object.entries(values).map(([key, value]) => envLine(key, value)).join(''));
     return;
   }
@@ -88,7 +91,7 @@ async function main(argv = process.argv.slice(2)) {
   console.log(JSON.stringify(await provision(options)));
 }
 
-module.exports = { sqlOptions, envLine, resolveInstance, provision };
+module.exports = { sqlOptions, envLine, resolveInstance, provision, main };
 if (require.main === module) main().catch(error => {
   const safe = /^[A-Z][A-Z0-9_]+$/.test(error.message ?? '') ? error.message : 'INSTALL_DATABASE_FAILED';
   // The code identifies the stage without logging SQL credentials or driver messages.

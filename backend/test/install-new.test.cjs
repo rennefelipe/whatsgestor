@@ -4,7 +4,11 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { parse } = require('dotenv');
-const { envLine, resolveInstance, provision } = require('../scripts/install-new.cjs');
+const { envLine, resolveInstance, provision, main } = require('../scripts/install-new.cjs');
+
+test('instance resolver refuses live env paths, including Windows case variants, before any access', async () => {
+  for (const file of ['.env', '.ENV']) await assert.rejects(() => main(['resolve-instance', path.resolve(__dirname, '..', file)]), /LIVE_ENV_CANNOT_BE_TARGET_FILE/);
+});
 
 test('installer env values preserve passwords and Windows paths exactly', () => {
   for (const value of ['C:\\ProgramData\\WhatsGestor', ' # password = value ', 'quote\'and#hash', 'double"quote', 'back`tick']) {
